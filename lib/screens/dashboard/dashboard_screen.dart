@@ -157,6 +157,11 @@ class _DashoardTabState extends State<DashoardTab> {
                                 itemCount: situations.length,
                                 padding: EdgeInsets.only(top: 8, bottom: 8),
                                 itemBuilder: (context, index) {
+                                  int tamanhoTextoDescricao = 30;
+                                  String tombo = situations[index]["tombo"];//;
+                                  String descricao = situations[index]["descricao"];//;
+                                  if (descricao.length >= tamanhoTextoDescricao)
+                                    descricao = descricao.substring(0,tamanhoTextoDescricao);
                                   return Card(
                                     shadowColor: Theme.of(context)
                                         .colorScheme
@@ -168,20 +173,18 @@ class _DashoardTabState extends State<DashoardTab> {
                                         .colorScheme
                                         .onBackground,
                                     elevation: 0,
-                                    child: Container(
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            situations[index]["descricao"].substring(0,10),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .displayMedium!
-                                                .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary),
-                                          ),
-                                        ],
+                                    child: DefaultTextStyle(
+                                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                                          color: Theme.of(context).colorScheme.primary,
+                                          fontWeight: FontWeight.normal),
+                                      child: Container(
+                                        child: Row(
+                                          children: [
+                                            Text(tombo),
+                                            SizedBox(width: 5,),
+                                            Expanded(child: Text(descricao))
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   );
@@ -189,7 +192,7 @@ class _DashoardTabState extends State<DashoardTab> {
                                 });
                           } else {
                             return Text(
-                              "else",
+                              "",
                               style: TextStyle(color: Colors.red),
                             );
                             // Center(
