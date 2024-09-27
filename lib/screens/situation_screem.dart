@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
-class Situacao extends StatefulWidget {
-  const Situacao({super.key, required this.title});
+class SituationScreen extends StatefulWidget {
+  const SituationScreen({super.key, required this.title});
 
   final String title;
 
   @override
-  State<Situacao> createState() => _SituacaoState();
+  State<SituationScreen> createState() => _SituationScreenState();
 }
 
-class _SituacaoState extends State<Situacao> {
+class _SituationScreenState extends State<SituationScreen> {
 
   int _counter = 0;
   // String host = "127.0.0.2:5001";
@@ -26,8 +26,8 @@ class _SituacaoState extends State<Situacao> {
 
   @override
   initState() {
-    print("initState situacao");
-    _atualizarSituacaoSenhas();
+    print("initState SituationScreen");
+    _atualizarSituationScreenSenhas();
     super.initState();
     // _executar();
   }
@@ -90,7 +90,7 @@ class _SituacaoState extends State<Situacao> {
   //   );
   // }
 
-  Future<void> _atualizarSituacaoSenhas() async {
+  Future<void> _atualizarSituationScreenSenhas() async {
 
     var endPoint = '/api/situation';
     var url = Uri.http(host, endPoint, {'q': ''});
@@ -102,6 +102,34 @@ class _SituacaoState extends State<Situacao> {
       print(response.body);
       var item = convert.jsonDecode(response.body) as List<dynamic>;
       print(item);
+      // TipoSenha tipoSenha = TipoSenha(item['tipo_senha']['id'], item['tipo_senha']['abreviacao'], item['tipo_senha']['descricao'], item['tipo_senha']['ordem'], item['tipo_senha']['status']);
+      // Guiche guiche = Guiche(id: item['guiche']['id'], ip: item['guiche']['ip'], nome: item['guiche']['nome'], status: item['guiche']['status']);
+      // setState(() {
+      //
+      //   List<String> countries = ["Nepal", "India", "Pakistan", "USA", "Canada", "China"];
+      //   if(countries.contains("Nepal")){
+      //     print("SIM");
+      //   }else{
+      //     print("NÃO");
+      //   }
+      //
+      //   atendimento = Atendimento(item['id'], item['senha'], tipoSenha, item['atendente'], guiche as Guiche?, item['data_cadastro'],  item['status']);
+      //   bool existe = false;
+      //   for (var temp in senhasChamadas){
+      //     if(temp.id == atendimento!.id){
+      //       existe = true;
+      //     }
+      //   }
+      //
+      //   if(!existe){
+      //     senhasChamadas.add(atendimento);
+      //     print("SIM");
+      //   }
+      //   if (senhasChamadas.length > 6){
+      //     senhasChamadas.remove(senhasChamadas.first);
+      //   }
+      //   exibirSenha = true;
+      // });
     }
     else {
       print('Request failed with status: ${response.statusCode}.');
