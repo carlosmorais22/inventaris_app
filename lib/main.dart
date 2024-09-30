@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:inventaris/screens/dashboard/dashboard_screen.dart';
-import 'package:inventaris/screens/home/home_screen.dart';
-import 'package:inventaris/screens/situation_screem.dart';
-import 'package:inventaris/shared/localization_app.dart';
+import 'package:inventaris/screens/dashboard_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,27 +13,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      supportedLocales: const [
-        Locale('pt', 'BR'),
-        Locale('en', 'US'),
-      ],
-      localizationsDelegates: [
-        LocalizationsApp.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        FormBuilderLocalizations.delegate,
-      ],
-      localeListResolutionCallback:
-          (List<Locale>? locales, Iterable<Locale> supportedLocales) {
-        // Your custom logic to choose the best locale
-        for (final locale in locales!) {
-          if (supportedLocales.contains(locale)) {
-            return locale;
-          }
-        }
-        // If no match is found, return the first supported locale
-        return supportedLocales.first;
-      },
       theme: ThemeData(
         useMaterial3: true,
         fontFamily: 'Roboto',
@@ -56,7 +30,7 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: Colors.grey.shade200,
         colorScheme:
-        ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent).copyWith(
+            ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent).copyWith(
           inversePrimary: Color.fromRGBO(129, 193, 231, 95),
 
           onBackground: Colors.white,
@@ -76,9 +50,7 @@ class MyApp extends StatelessWidget {
         ),
         textTheme: TextTheme(
           bodyLarge: TextStyle(
-              color: Colors.black,
-              fontStyle: FontStyle.italic,
-              fontSize: 20),
+              color: Colors.black, fontStyle: FontStyle.italic, fontSize: 20),
           bodyMedium: TextStyle(
               color: Color.fromARGB(250, 26, 35, 126),
               fontWeight: FontWeight.bold,
@@ -110,7 +82,7 @@ class MyApp extends StatelessWidget {
             fontSize: MediaQuery.of(context).size.height / 75,
           ),
           labelSmall: TextStyle(
-              fontSize: MediaQuery.of(context).size.height / 80,
+              fontSize: MediaQuery.of(context).size.height / 85,
               color: Colors.black54),
           // bodyMedium: GoogleFonts.merriweather(),
         ),
