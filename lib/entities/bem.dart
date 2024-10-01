@@ -40,4 +40,21 @@ class Bem {
         data_aquisicao: map["data_aquisicao"],
         ativo: map["ativo"],
       );
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'setor': setor,
+      'tombo': tombo,
+      'descricao': descricao,
+      'conta': conta,
+      'estado': estado,
+      'valor': valor,
+      'valor_remanescente': valor_remanescente,
+      'numero_serie': numero_serie,
+      'data': data,
+      'data_aquisicao': data_aquisicao,
+      'ativo': ativo,
+    };
+  }
 }

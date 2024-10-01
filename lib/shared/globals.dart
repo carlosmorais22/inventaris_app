@@ -1,3 +1,4 @@
+import 'package:inventaris/entities/bem.dart';
 import 'package:inventaris/entities/inventario.dart';
 
 class Globals {
@@ -10,4 +11,5 @@ class Globals {
   Globals._internal() {}
 
   late Inventario inventario;
+  late Bem bem;
 }

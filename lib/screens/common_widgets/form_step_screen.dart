@@ -80,7 +80,7 @@ class FormStepScreenState extends State<FormStepScreen> {
             ),
           ]),
       body: Container(
-        padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 15),
+        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
         color: Theme.of(context).colorScheme.onBackground,
         child: Column(
           children: [

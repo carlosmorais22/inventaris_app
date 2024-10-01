@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:inventaris/entities/setor.dart';
 import 'package:inventaris/screens/common_widgets/step_title.dart';
+import 'package:inventaris/screens/inventario/components/build_dados_bem.dart';
 import 'package:inventaris/shared/globals.dart';
-
-enum SingingCharacter { sim, nao, outro }
+import 'package:toggle_switch/toggle_switch.dart';
 
 class InventarisIncluirSituacao extends StatefulWidget {
   final VoidCallback refreshStatusSteps;
@@ -23,33 +23,12 @@ class InventarisIncluirSituacao extends StatefulWidget {
 
 class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
   String host = "192.168.1.3:5009";
-  SingingCharacter? _character = SingingCharacter.sim;
+  int initSituacaoValue = 0;
   String initSetorName = "";
 
   late Future<List> _carregarBens;
 
-  _refreshValue() {
-    int value = 0;
-    switch (_character) {
-      case SingingCharacter.sim:
-        value = 1;
-        break;
-      case SingingCharacter.nao:
-        value = 2;
-        break;
-      case SingingCharacter.outro:
-        value = 3;
-        break;
-      default:
-        break;
-    }
-    if (value > 0) {
-      setState(() {
-        Globals().inventario.situacao = value;
-        widget.refreshStatusSteps();
-      });
-    }
-  }
+  List<double> larguraDasColunas = [0.3, 0.7];
 
   @override
   void initState() {
@@ -72,92 +51,84 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
     });
 
     return Container(
-      child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-            color: Theme.of(context).colorScheme.primary,
-            fontWeight: FontWeight.normal),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            StepTitle(
-                title: "O bem foi localizado?" +
-                    Globals().inventario.situacao.toString()),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Radio<SingingCharacter>(
-                        value: SingingCharacter.sim,
-                        groupValue: _character,
-                        onChanged: (SingingCharacter? value) {
-                          setState(() {
-                            _character = value;
-                            _refreshValue();
-                          });
-                        }),
-                    const Text('Sim'),
-                    Radio<SingingCharacter>(
-                        value: SingingCharacter.outro,
-                        groupValue: _character,
-                        onChanged: (SingingCharacter? value) {
-                          setState(() {
-                            _character = value;
-                            _refreshValue();
-                          });
-                        }),
-                    const Text('Sim, Mas em outro setor'),
-                    Radio<SingingCharacter>(
-                        value: SingingCharacter.nao,
-                        groupValue: _character,
-                        onChanged: (SingingCharacter? value) {
-                          _character = value;
-                          _refreshValue();
-                        }),
-                    const Text('Não'),
+      padding: EdgeInsets.only(top: 10),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: DefaultTextStyle(
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.normal),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              BuildDadosBem(),
+              SizedBox(
+                height: 10,
+              ),
+              StepTitle(title: "O bem foi localizado?"),
+              Center(
+                child: ToggleSwitch(
+                  initialLabelIndex: initSituacaoValue,
+                  totalSwitches: 3,
+                  minWidth: (MediaQuery.of(context).size.width - 40) * .3,
+                  activeBgColor: [Theme.of(context).colorScheme.primary!],
+                  labels: ["Sim", "Não", "Outro Setor"],
+                  customTextStyles: [
+                    Theme.of(context).textTheme.displayMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.background!),
                   ],
+                  onToggle: (index) {
+                    setState(() {
+                      initSituacaoValue = index!;
+                      Globals().inventario.situacao = index! + 1;
+                      if (index! + 1 != 3) {
+                        Globals().inventario.situacao_observacao = "";
+                      }
+                    });
+                    widget.refreshStatusSteps();
+                  },
                 ),
-              ],
-            ),
-            Globals().inventario.situacao == 3
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      StepTitle(title: "Em qual setor o bem foi localizado?"),
-                      EasyAutocomplete(
-                          initialValue: initSetorName,
-                          suggestions: suggestions,
-                          inputTextStyle:
-                              Theme.of(context).textTheme.titleMedium!,
-                          suggestionBuilder: (data) {
-                            return Container(
-                                margin: EdgeInsets.all(1),
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant),
-                                child: Text(data,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium));
-                          },
-                          onChanged: (value) =>
-                              print('onChanged value: $value'),
-                          onSubmitted: (value) {
-                            setState(() {
-                              Globals().inventario.situacao_observacao = value;
-                            });
-                            print(Globals().inventario.situacao_observacao);
-                            widget.refreshStatusSteps();
-                          }),
-                    ],
-                  )
-                : SizedBox(),
-          ],
+              ),
+              Globals().inventario.situacao == 3
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        StepTitle(title: "Em qual setor o bem foi localizado?"),
+                        EasyAutocomplete(
+                            initialValue: initSetorName,
+                            suggestions: suggestions,
+                            inputTextStyle:
+                                Theme.of(context).textTheme.titleMedium!,
+                            suggestionBuilder: (data) {
+                              return Container(
+                                  margin: EdgeInsets.all(1),
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant),
+                                  child: Text(data,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium));
+                            },
+                            onChanged: (value) =>
+                                print('onChanged value: $value'),
+                            onSubmitted: (value) {
+                              setState(() {
+                                Globals().inventario.situacao_observacao =
+                                    value;
+                              });
+                              print(Globals().inventario.situacao_observacao);
+                              widget.refreshStatusSteps();
+                            }),
+                      ],
+                    )
+                  : SizedBox(),
+            ],
+          ),
         ),
       ),
     );
@@ -170,10 +141,7 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
 
     print("try url " + host + endPoint);
     var response = await http.get(url);
-    print(response);
-    print(response.statusCode);
     if (response.statusCode == 201) {
-      print(response.body);
       return convert.jsonDecode(response.body) as List<dynamic>;
     } else {
       print('Request failed with status: ${response.statusCode}.');
