@@ -51,7 +51,7 @@ class BuildDadosBem extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     )),
-                Text(Globals().bem.estado.toString()),
+                Text(Globals().bem.estado_descricao!),
               ], // Pass the widgets to be set as the row content.
             )
           ]),

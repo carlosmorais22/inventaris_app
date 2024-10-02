@@ -37,9 +37,9 @@ class MyApp extends StatelessWidget {
           // inverseSurface: Colors.black54,
           // Text input
           onSurface: Colors.black87,
-          primary: Colors.black87,
+          primary: Colors.blueGrey,
           // hint input
-          onSurfaceVariant: Colors.lightBlueAccent,
+          onSurfaceVariant: Colors.lightBlue.shade100,
           // linhas
           outline: Colors.indigo.shade900,
           // AppBar

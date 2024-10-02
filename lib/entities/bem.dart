@@ -5,6 +5,7 @@ class Bem {
   String descricao;
   final int conta;
   final int? estado;
+  final String? estado_descricao;
   final String valor;
   final String? valor_remanescente;
   final String numero_serie;
@@ -19,6 +20,7 @@ class Bem {
       required this.descricao,
       required this.conta,
       required this.estado,
+      required this.estado_descricao,
       required this.valor,
       required this.valor_remanescente,
       required this.numero_serie,
@@ -33,6 +35,7 @@ class Bem {
         descricao: map["descricao"],
         conta: map["conta"],
         estado: map["estado"],
+        estado_descricao: map["estado_descricao"],
         valor: map["valor"],
         valor_remanescente: map["valor_remanescente"],
         numero_serie: map["numero_serie"],
@@ -49,6 +52,7 @@ class Bem {
       'descricao': descricao,
       'conta': conta,
       'estado': estado,
+      'estado_descricao': estado_descricao,
       'valor': valor,
       'valor_remanescente': valor_remanescente,
       'numero_serie': numero_serie,

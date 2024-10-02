@@ -56,7 +56,7 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
         scrollDirection: Axis.vertical,
         child: DefaultTextStyle(
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.normal),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

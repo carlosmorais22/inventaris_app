@@ -1,9 +1,10 @@
 import 'dart:convert' as convert;
 
-import 'package:easy_autocomplete/easy_autocomplete.dart';
+import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:inventaris/entities/estado.dart';
+import 'package:inventaris/screens/common_widgets/app_text_field.dart';
 import 'package:inventaris/screens/common_widgets/step_title.dart';
 import 'package:inventaris/screens/inventario/components/build_dados_bem.dart';
 import 'package:inventaris/shared/globals.dart';
@@ -23,48 +24,67 @@ class InventarisIncluirPlaquetaEstado extends StatefulWidget {
 
 class _InventarisIncluirPlaquetaEstadoState
     extends State<InventarisIncluirPlaquetaEstado> {
+  /// This is list of city which will pass to the drop down.
+  List<SelectedListItem> _listaDeEstados = [];
+  List<Estado> _estados = [];
+  final TextEditingController _estadoController = TextEditingController();
+
   String host = "192.168.1.3:5009";
   int initTemPlaquetaValue = 0;
   String initEstadoNome = '';
 
-  final _controller = TextEditingController();
+  // final _controller = TextEditingController();
 
   late Future<List> _carregarEstados;
 
-  void _printLatestValue() {
-    setState(() {
-      Globals().inventario.numero_serie = _controller.text;
-      widget.refreshStatusSteps();
-    });
+  void _estadoControllerEvent() {
+    print("------------------------------------");
+    print(_estados.length);
+    print("------------------------------------");
+    if (_estados.length > 0) {
+      var estadoSelecionado =
+          _estados.firstWhere((x) => x.descricao == _estadoController.text);
+
+      setState(() {
+        Globals().inventario.estado = estadoSelecionado.id;
+        widget.refreshStatusSteps();
+      });
+    }
   }
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    _controller.dispose();
+    _estadoController.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    // Start listening to changes.
-    _controller.addListener(_printLatestValue);
+    _estadoController.addListener(_estadoControllerEvent);
     _carregarEstados = _refreshEstados();
+    _estadoController.text = Globals().bem.estado_descricao!;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> suggestions = [];
     List<Estado> estados = [];
 
+    _listaDeEstados = [];
+    _estados = [];
     _carregarEstados.then((list) {
       for (Map<String, dynamic> map in list) {
         Estado estado = Estado.fromMap(map);
         Globals().inventario!.estado ??= estado.id;
         estados.add(estado);
-        suggestions.add(estado.descricao);
+        _estados.add(estado);
+        _listaDeEstados.add(
+          SelectedListItem(
+            name: estado.descricao,
+            value: estado.id.toString(),
+          ),
+        );
       }
     });
 
@@ -73,7 +93,7 @@ class _InventarisIncluirPlaquetaEstadoState
         scrollDirection: Axis.vertical,
         child: DefaultTextStyle(
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.normal),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -83,7 +103,7 @@ class _InventarisIncluirPlaquetaEstadoState
               SizedBox(
                 height: 10,
               ),
-              StepTitle(title: "O bem tem Plaqueta?"),
+              StepTitle(title: "O bem tem plaqueta de metal?"),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -109,34 +129,25 @@ class _InventarisIncluirPlaquetaEstadoState
                       },
                     ),
                   ),
-                  StepTitle(title: "Qual o estado do bem?"),
-                  EasyAutocomplete(
-                      initialValue: initEstadoNome,
-                      suggestions: suggestions,
-                      inputTextStyle: Theme.of(context).textTheme.titleMedium!,
-                      suggestionBuilder: (data) {
-                        return Container(
-                            margin: EdgeInsets.all(1),
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant),
-                            child: Text(data,
-                                style:
-                                    Theme.of(context).textTheme.titleMedium));
-                      },
-                      onChanged: (value) => print('onChanged value: $value'),
-                      onSubmitted: (value) {
-                        setState(() {
-                          // Globals().inventario.estado =
-                          //     suggestions.in;
-                        });
-                        print(Globals().inventario.situacao_observacao);
-                        widget.refreshStatusSteps();
-                      }),
                 ],
               ),
+              SizedBox(
+                height: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppTextField(
+                    textEditingController: _estadoController,
+                    title: "Qual o estado físico atual do bem?",
+                    hint: "",
+                    readOnly: true,
+                    isListSelected: true,
+                    list: _listaDeEstados,
+                    voidCallback: _estadoControllerEvent,
+                  ),
+                ],
+              )
             ],
           ),
         ),

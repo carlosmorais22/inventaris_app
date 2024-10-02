@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inventaris/screens/common_widgets/custom_text_field.dart';
+import 'package:inventaris/screens/common_widgets/app_text_field.dart';
 import 'package:inventaris/screens/common_widgets/step_title.dart';
 import 'package:inventaris/screens/inventario/components/build_dados_bem.dart';
 import 'package:inventaris/shared/globals.dart';
@@ -19,31 +19,33 @@ class InventarisIncluirNumeroSerie extends StatefulWidget {
 
 class _InventarisIncluirNumeroSerieState
     extends State<InventarisIncluirNumeroSerie> {
-  int initTemNumeroSerieValue = 0;
+  int initTemNumeroSerieValue = 1;
   String initSetorName = '';
 
-  final _controller = TextEditingController();
+  // final _controller = TextEditingController();
+  final _controller1 = TextEditingController();
 
   void _printLatestValue() {
     setState(() {
-      Globals().inventario.numero_serie = _controller.text;
+      // Globals().inventario.numero_serie = _controller.text;
+      Globals().inventario.numero_serie = _controller1.text;
       widget.refreshStatusSteps();
     });
   }
 
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    _controller.dispose();
-    super.dispose();
-  }
-
+  // @override
+  // void dispose() {
+  //   // Clean up the controller when the widget is removed from the
+  //   // widget tree.
+  //   _controller.dispose();
+  //   super.dispose();
+  // }
+  //
   @override
   void initState() {
     super.initState();
-    // Start listening to changes.
-    _controller.addListener(_printLatestValue);
+    Globals().inventario.tem_numero_serie = false;
+    // _controller.addListener(_printLatestValue);
   }
 
   @override
@@ -86,7 +88,7 @@ class _InventarisIncluirNumeroSerieState
                               index == 1 ? false : true!;
                           if (index! == 1) {
                             Globals().inventario.numero_serie = "";
-                            _controller.text = "";
+                            _controller1.text = "";
                           }
                         });
                         widget.refreshStatusSteps();
@@ -95,18 +97,25 @@ class _InventarisIncluirNumeroSerieState
                   ),
                 ],
               ),
-              Globals().inventario.tem_numero_serie!
+              Globals().inventario.tem_numero_serie != null &&
+                      Globals().inventario.tem_numero_serie!
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const StepTitle(
-                            title: "Qual o número de série do bem?"),
-                        CustomTextField(
-                          label: "",
-                          controller: _controller,
-                          keyboardType: TextInputType.number,
+                        AppTextField(
+                          textEditingController: _controller1,
+                          title: "Qual o número de série?",
+                          hint: "",
+                          isListSelected: false,
                         ),
+                        // const StepTitle(
+                        //     title: "Qual o número de série do bem?"),
+                        // CustomTextField(
+                        //   label: "",
+                        //   controller: _controller,
+                        //   keyboardType: TextInputType.number,
+                        // ),
                       ],
                     )
                   : SizedBox(),
