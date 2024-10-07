@@ -11,5 +11,8 @@ class Globals {
   Globals._internal() {}
 
   late Inventario inventario;
+  late String inventario_situacao;
+  late String inventario_tem_numero_serie;
+  late String inventario_estado;
   late Bem bem;
 }

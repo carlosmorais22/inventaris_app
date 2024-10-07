@@ -3,6 +3,7 @@ import 'package:inventaris/screens/common_widgets/app_text_field.dart';
 import 'package:inventaris/screens/common_widgets/step_title.dart';
 import 'package:inventaris/screens/inventario/components/build_dados_bem.dart';
 import 'package:inventaris/shared/globals.dart';
+import 'package:inventaris/utils/constants.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class InventarisIncluirNumeroSerie extends StatefulWidget {
@@ -19,37 +20,37 @@ class InventarisIncluirNumeroSerie extends StatefulWidget {
 
 class _InventarisIncluirNumeroSerieState
     extends State<InventarisIncluirNumeroSerie> {
-  int initTemNumeroSerieValue = 1;
-  String initSetorName = '';
+  // late int initTemNumeroSerieValue;
 
-  // final _controller = TextEditingController();
-  final _controller1 = TextEditingController();
+  List<String> _listaSituacoes = [kSim, kNao];
+  final _controller= TextEditingController();
 
   void _printLatestValue() {
     setState(() {
-      // Globals().inventario.numero_serie = _controller.text;
-      Globals().inventario.numero_serie = _controller1.text;
+      Globals().inventario.numero_serie = _controller.text;
       widget.refreshStatusSteps();
     });
   }
 
-  // @override
-  // void dispose() {
-  //   // Clean up the controller when the widget is removed from the
-  //   // widget tree.
-  //   _controller.dispose();
-  //   super.dispose();
-  // }
-  //
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
-    Globals().inventario.tem_numero_serie = false;
-    // _controller.addListener(_printLatestValue);
+    _controller.addListener(_printLatestValue);
+    if (Globals().inventario.numero_serie != null)
+    _controller.text = Globals().inventario.numero_serie!;
   }
 
   @override
   Widget build(BuildContext context) {
+
+    double _sizeWidth = MediaQuery.of(context).size.width;
+
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,24 +64,23 @@ class _InventarisIncluirNumeroSerieState
             children: [
               Center(
                 child: ToggleSwitch(
-                  initialLabelIndex: initTemNumeroSerieValue,
+                  initialLabelIndex: Globals().inventario.tem_numero_serie != null && Globals().inventario.tem_numero_serie! ? 0 : 1,
                   totalSwitches: 2,
-                  minWidth: (MediaQuery.of(context).size.width - 40) * .3,
-                  activeBgColor: [Theme.of(context).colorScheme.primary!],
-                  labels: ["Sim", "Não"],
-                  customTextStyles: [
-                    Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.background!),
-                  ],
+                  customWidths: [ _sizeWidth * .4, _sizeWidth * .4 ],
+                  inactiveBgColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                  activeBgColor: [Theme.of(context).colorScheme.primary],
+                  labels: _listaSituacoes,
+                  customTextStyles: [Theme.of(context).textTheme.displayMedium!],
                   onToggle: (index) {
                     setState(() {
-                      initTemNumeroSerieValue = index!;
+                      // initTemNumeroSerieValue = index!;
                       Globals().inventario.tem_numero_serie =
-                          index == 1 ? false : true!;
+                      index == 1 ? false : true!;
                       if (index! == 1) {
                         Globals().inventario.numero_serie = "";
-                        _controller1.text = "";
+                        _controller.text = "";
                       }
+                      Globals().inventario_tem_numero_serie = _listaSituacoes[index];
                     });
                     widget.refreshStatusSteps();
                   },
@@ -88,28 +88,20 @@ class _InventarisIncluirNumeroSerieState
               ),
             ],
           ),
-          Globals().inventario.tem_numero_serie != null &&
-                  Globals().inventario.tem_numero_serie!
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppTextField(
-                      textEditingController: _controller1,
-                      title: "Qual o número de série?",
-                      hint: "",
-                      isListSelected: false,
-                    ),
-                    // const StepTitle(
-                    //     title: "Qual o número de série do bem?"),
-                    // CustomTextField(
-                    //   label: "",
-                    //   controller: _controller,
-                    //   keyboardType: TextInputType.number,
-                    // ),
-                  ],
-                )
-              : SizedBox(),
+          Globals().inventario.tem_numero_serie != null && Globals().inventario.tem_numero_serie!
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppTextField(
+                    textEditingController: _controller,
+                    title: "Qual o número de série?",
+                    hint: "",
+                    isListSelected: false,
+                  ),
+                ],
+              )
+            : SizedBox(),
         ],
       ),
     );

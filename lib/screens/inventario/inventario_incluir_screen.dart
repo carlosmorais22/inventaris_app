@@ -6,8 +6,9 @@ import 'package:inventaris/screens/inventario/components/inventario_incluir_nume
 import 'package:inventaris/screens/inventario/components/inventario_incluir_observacao.dart';
 import 'package:inventaris/screens/inventario/components/inventario_incluir_plaqueta_estado.dart';
 import 'package:inventaris/screens/inventario/components/inventario_incluir_situacao.dart';
-import 'package:inventaris/screens/inventario/components/inventario_incluir_sumary.dart';
+import 'package:inventaris/screens/inventario/components/inventario_incluir_resumo.dart';
 import 'package:inventaris/shared/globals.dart';
+import 'package:inventaris/utils/constants.dart';
 
 class InventarioIncluirScreen extends StatefulWidget {
   final VoidCallback callback;
@@ -27,8 +28,10 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
   @override
   void initState() {
     Globals().inventario = Inventario(
-        ano: 2024, bem: widget.bem.id, situacao: 1, estado: widget.bem.estado);
+        ano: 2024, bem: widget.bem.id, situacao: 1, estado: widget.bem.estado, tem_numero_serie: false, plaqueta: false, numero_serie: "");
+    Globals().inventario_situacao = kSim;
     Globals().bem = widget.bem;
+    Globals().inventario_estado = widget.bem.estado_descricao!;
     super.initState();
   }
 
@@ -61,20 +64,10 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
 
       bool? tem_plaqueta = Globals().inventario.plaqueta;
       int? estadoBem = Globals().inventario.estado;
-      print("#################################");
-      print("#################################");
-      print(tem_plaqueta);
-      print(estadoBem);
-      print("#################################");
-      print("#################################");
       listStatus[2] =
           tem_plaqueta != null && estadoBem != null; // && estadoBem != "";
-      // listStatus[3] = loan.rate > 0 && loan.number_installments > 0;
-      // listStatus[4] = DateUtil.daysDifference(
-      //         DateTime.parse(loan.date), DateTime.parse(Globals().dueDate)) >=
-      //     10;
-      // listStatus[5] =
-      //     listStatus[0] && listStatus[2] && listStatus[3] && listStatus[4];
+      listStatus[3] = true;
+      listStatus[4] = listStatus[0] && listStatus[1] && listStatus[2] && listStatus[3];
     });
   }
 
@@ -106,7 +99,8 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
         return InventarisIncluirObservacao(
             refreshStatusSteps: refreshStatusSteps);
       case 4:
-        return InventarisIncluirSumary(refreshStatusSteps: refreshStatusSteps);
+        listStatus[4] = listStatus[0] && listStatus[1] && listStatus[2] && listStatus[3];
+        return InventarisIncluirResumo(refreshStatusSteps: refreshStatusSteps);
     }
   }
 }

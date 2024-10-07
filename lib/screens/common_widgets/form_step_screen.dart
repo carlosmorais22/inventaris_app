@@ -2,6 +2,7 @@ import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:inventaris/screens/common_widgets/custon_elevated_button.dart';
 import 'package:inventaris/screens/common_widgets/custon_outlined_button.dart';
+import 'package:inventaris/utils/constants.dart';
 import 'package:inventaris/utils/my_alert.dart';
 import 'package:keyboard_service/keyboard_service.dart';
 
@@ -75,7 +76,7 @@ class FormStepScreenState extends State<FormStepScreen> {
             IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                cancelAddLoan();
+                _cancelar();
               },
             ),
           ]),
@@ -103,9 +104,10 @@ class FormStepScreenState extends State<FormStepScreen> {
                           // lineDotRadius: 1.5,
                           steps: easySteps,
                           onStepReached: (index) {
-                            setState(() {
-                              activeStep = index;
-                            });
+                            null;
+                            // setState(() {
+                            //   activeStep = index;
+                            // });
                           }),
                     )
                   : SizedBox(),
@@ -122,7 +124,7 @@ class FormStepScreenState extends State<FormStepScreen> {
                     Expanded(
                         child: activeStep > 0
                             ? CustonOutlinedButton(
-                                text: "Voltar",
+                                text: kVoltar,
                                 onClickBtnTap: () {
                                   setState(() {
                                     KeyboardService.dismiss();
@@ -134,7 +136,7 @@ class FormStepScreenState extends State<FormStepScreen> {
                     Expanded(
                         child: activeStep == widget.numberSteps - 1
                             ? CustonElevatedButton(
-                                text: "Registrar",
+                                text: kRegistrar,
                                 onClickBtnTap: widget.listStatus[activeStep]
                                     ? () async {
                                         widget.callbackRegister!();
@@ -142,7 +144,7 @@ class FormStepScreenState extends State<FormStepScreen> {
                                     : null,
                               )
                             : CustonElevatedButton(
-                                text: 'Próximo',
+                                text: kProximo,
                                 onClickBtnTap: widget.listStatus[activeStep]
                                     ? () {
                                         setState(() {
@@ -161,7 +163,7 @@ class FormStepScreenState extends State<FormStepScreen> {
     ));
   }
 
-  cancelAddLoan() {
+  _cancelar() {
     MyAlert.confirm(
         title: "Atenção!!!",
         text: "Deseja realmente sair?",

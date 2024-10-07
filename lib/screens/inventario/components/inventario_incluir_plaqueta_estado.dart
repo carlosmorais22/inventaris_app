@@ -38,15 +38,13 @@ class _InventarisIncluirPlaquetaEstadoState
   late Future<List> _carregarEstados;
 
   void _estadoControllerEvent() {
-    print("------------------------------------");
-    print(_estados.length);
-    print("------------------------------------");
     if (_estados.length > 0) {
       var estadoSelecionado =
           _estados.firstWhere((x) => x.descricao == _estadoController.text);
 
       setState(() {
         Globals().inventario.estado = estadoSelecionado.id;
+        Globals().inventario_estado = estadoSelecionado.descricao;
         widget.refreshStatusSteps();
       });
     }
@@ -65,6 +63,7 @@ class _InventarisIncluirPlaquetaEstadoState
     _estadoController.addListener(_estadoControllerEvent);
     _carregarEstados = _refreshEstados();
     _estadoController.text = Globals().bem.estado_descricao!;
+    Globals().inventario_estado = Globals().bem.estado_descricao!;
   }
 
   @override

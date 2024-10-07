@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inventaris/shared/globals.dart';
+import 'package:inventaris/utils/constants.dart';
 
 class BuildDadosBem extends StatelessWidget {
   const BuildDadosBem({
@@ -16,12 +17,12 @@ class BuildDadosBem extends StatelessWidget {
           color: Theme.of(context).colorScheme.secondary,
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Table(columnWidths: {
-            0: FixedColumnWidth((MediaQuery.of(context).size.width - 40) * 0.2),
-            1: FixedColumnWidth((MediaQuery.of(context).size.width - 40) * 0.8),
+            0: FixedColumnWidth((MediaQuery.of(context).size.width - 40) * 0.25),
+            1: FixedColumnWidth((MediaQuery.of(context).size.width - 40) * 0.75),
           }, children: [
             TableRow(
               children: [
-                Text("Tombo",
+                Text(kBemTombo,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     )),
@@ -30,7 +31,7 @@ class BuildDadosBem extends StatelessWidget {
             ),
             TableRow(
               children: [
-                Text("Descrição",
+                Text(kBemDescricao,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     )),
@@ -39,7 +40,7 @@ class BuildDadosBem extends StatelessWidget {
             ),
             TableRow(
               children: [
-                Text("Setor",
+                Text(kBemSetor,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     )),
@@ -48,7 +49,7 @@ class BuildDadosBem extends StatelessWidget {
             ),
             TableRow(
               children: [
-                Text("Estado",
+                Text(kBemEstado,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     )),

@@ -7,6 +7,7 @@ import 'package:inventaris/entities/setor.dart';
 import 'package:inventaris/screens/common_widgets/step_title.dart';
 import 'package:inventaris/screens/inventario/components/build_dados_bem.dart';
 import 'package:inventaris/shared/globals.dart';
+import 'package:inventaris/utils/constants.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class InventarisIncluirSituacao extends StatefulWidget {
@@ -23,16 +24,15 @@ class InventarisIncluirSituacao extends StatefulWidget {
 
 class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
   String host = "app-inventario.uerr.edu.br";
-  int initSituacaoValue = 0;
   String initSetorName = "";
 
-  late Future<List> _carregarBens;
-
-  List<double> larguraDasColunas = [0.3, 0.7];
+  late Future<List> _carregarSetores;
+  List<String> _listaSituacoes = [kSetorOrigem, kOutroSetor];
 
   @override
   void initState() {
-    _carregarBens = _refreshSetores();
+    // Globals().inventario.situacao = 1;
+    _carregarSetores = _refreshSetores();
     super.initState();
   }
 
@@ -41,7 +41,7 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
     List<String> suggestions = [];
     List<Setor> setores = [];
 
-    _carregarBens.then((list) {
+    _carregarSetores.then((list) {
       for (Map<String, dynamic> map in list) {
         Setor setor = Setor.fromMap(map);
         Globals().inventario!.situacao_observacao ??= setor.sigla;
@@ -49,6 +49,8 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
         suggestions.add(setor.sigla);
       }
     });
+
+    double _sizeWidth = MediaQuery.of(context).size.width;
 
     return Container(
       child: SingleChildScrollView(
@@ -58,23 +60,21 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             BuildDadosBem(),
-            StepTitle(title: "O bem foi localizado?"),
+            StepTitle(title: kTelaSituacaoLocalizado),
             Center(
               child: ToggleSwitch(
-                initialLabelIndex: initSituacaoValue,
-                totalSwitches: 3,
-                minWidth: (MediaQuery.of(context).size.width - 40) * .3,
-                activeBgColor: [Theme.of(context).colorScheme.primary!],
-                labels: ["Sim", "Não", "Outro Setor"],
-                customTextStyles: [
-                  Theme.of(context).textTheme.displayMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.background!),
-                ],
+                initialLabelIndex: Globals().inventario.situacao - 1,
+                totalSwitches: 2,
+                customWidths: [ _sizeWidth * .4, _sizeWidth * .4 ],
+                inactiveBgColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                activeBgColor: [Theme.of(context).colorScheme.primary],
+                labels: _listaSituacoes,
+                customTextStyles: [Theme.of(context).textTheme.titleMedium!],
                 onToggle: (index) {
                   setState(() {
-                    initSituacaoValue = index!;
                     Globals().inventario.situacao = index! + 1;
-                    if (index! + 1 != 3) {
+                    Globals().inventario_situacao = _listaSituacoes[index];
+                    if (index! == 0) {
                       Globals().inventario.situacao_observacao = "";
                     }
                   });
@@ -87,7 +87,7 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      StepTitle(title: "Em qual setor o bem foi localizado?"),
+                      StepTitle(title: kTelaSituacaoQualSetor),
                       EasyAutocomplete(
                           initialValue: initSetorName,
                           suggestions: suggestions,
