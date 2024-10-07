@@ -29,7 +29,7 @@ class _InventarisIncluirPlaquetaEstadoState
   List<Estado> _estados = [];
   final TextEditingController _estadoController = TextEditingController();
 
-  String host = "192.168.1.3:5009";
+  String host = "app-inventario.uerr.edu.br";
   int initTemPlaquetaValue = 0;
   String initEstadoNome = '';
 
@@ -89,68 +89,57 @@ class _InventarisIncluirPlaquetaEstadoState
     });
 
     return Container(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: DefaultTextStyle(
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontWeight: FontWeight.normal),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              BuildDadosBem(),
-              SizedBox(
-                height: 10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          BuildDadosBem(),
+          StepTitle(title: "O bem tem plaqueta de metal?"),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: ToggleSwitch(
+                  initialLabelIndex: initTemPlaquetaValue,
+                  totalSwitches: 2,
+                  minWidth: (MediaQuery.of(context).size.width - 40) * .3,
+                  activeBgColor: [Theme.of(context).colorScheme.primary!],
+                  labels: ["Sim", "Não"],
+                  customTextStyles: [
+                    Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.background!),
+                  ],
+                  onToggle: (index) {
+                    setState(() {
+                      initTemPlaquetaValue = index!;
+                      Globals().inventario.plaqueta =
+                          index == 1 ? false : true!;
+                    });
+                    widget.refreshStatusSteps();
+                  },
+                ),
               ),
-              StepTitle(title: "O bem tem plaqueta de metal?"),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: ToggleSwitch(
-                      initialLabelIndex: initTemPlaquetaValue,
-                      totalSwitches: 2,
-                      minWidth: (MediaQuery.of(context).size.width - 40) * .3,
-                      activeBgColor: [Theme.of(context).colorScheme.primary!],
-                      labels: ["Sim", "Não"],
-                      customTextStyles: [
-                        Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Theme.of(context).colorScheme.background!),
-                      ],
-                      onToggle: (index) {
-                        setState(() {
-                          initTemPlaquetaValue = index!;
-                          Globals().inventario.plaqueta =
-                              index == 1 ? false : true!;
-                        });
-                        widget.refreshStatusSteps();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppTextField(
-                    textEditingController: _estadoController,
-                    title: "Qual o estado físico atual do bem?",
-                    hint: "",
-                    readOnly: true,
-                    isListSelected: true,
-                    list: _listaDeEstados,
-                    voidCallback: _estadoControllerEvent,
-                  ),
-                ],
-              )
             ],
           ),
-        ),
+          SizedBox(
+            height: 10,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppTextField(
+                textEditingController: _estadoController,
+                title: "Qual o estado físico atual do bem?",
+                hint: "",
+                readOnly: true,
+                isListSelected: true,
+                list: _listaDeEstados,
+                voidCallback: _estadoControllerEvent,
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

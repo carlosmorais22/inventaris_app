@@ -21,7 +21,7 @@ class _InventarisIncluirObservacaoState
   /// This is list of city which will pass to the drop down.
   final TextEditingController _observacaoController = TextEditingController();
 
-  String host = "192.168.1.3:5009";
+  String host = "app-inventario.uerr.edu.br";
   int initTemPlaquetaValue = 0;
 
   void _observacaoControllerEvent() {
@@ -50,34 +50,20 @@ class _InventarisIncluirObservacaoState
     return Container(
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        child: DefaultTextStyle(
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontWeight: FontWeight.normal),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              BuildDadosBem(),
-              SizedBox(
-                height: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppTextField(
-                    textEditingController: _observacaoController,
-                    title:
-                        "Informe abaixo apenas informações divergentes da descrição do bem",
-                    hint: "",
-                    isListSelected: false,
-                    voidCallback: _observacaoControllerEvent,
-                    minLines: 5,
-                  ),
-                ],
-              )
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BuildDadosBem(),
+            AppTextField(
+              textEditingController: _observacaoController,
+              title:
+                  "Informe abaixo apenas informações divergentes da descrição do bem",
+              hint: "",
+              isListSelected: false,
+              voidCallback: _observacaoControllerEvent,
+              minLines: 5,
+            ),
+          ],
         ),
       ),
     );

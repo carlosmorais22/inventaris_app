@@ -6,6 +6,7 @@ import 'package:inventaris/screens/inventario/components/inventario_incluir_nume
 import 'package:inventaris/screens/inventario/components/inventario_incluir_observacao.dart';
 import 'package:inventaris/screens/inventario/components/inventario_incluir_plaqueta_estado.dart';
 import 'package:inventaris/screens/inventario/components/inventario_incluir_situacao.dart';
+import 'package:inventaris/screens/inventario/components/inventario_incluir_sumary.dart';
 import 'package:inventaris/shared/globals.dart';
 
 class InventarioIncluirScreen extends StatefulWidget {
@@ -104,19 +105,8 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
         }
         return InventarisIncluirObservacao(
             refreshStatusSteps: refreshStatusSteps);
-      //   case 4:
-      //     // refreshStatusSteps();
-      //     if (Globals().amount != null) {
-      //       Globals().loan.amount = Globals().amount;
-      //     }
-      //     bool _installmentCalculationType =
-      //         Globals().installmentCalculationType == 0 ? true : false;
-      //     newInstallments = Installment.calculateInstallments(
-      //         Globals().loan,
-      //         false,
-      //         _installmentCalculationType,
-      //         DateTime.tryParse(Globals().dueDate)!);
-      //     return LoanAddSummary(installments: newInstallments);
+      case 4:
+        return InventarisIncluirSumary(refreshStatusSteps: refreshStatusSteps);
     }
   }
 }

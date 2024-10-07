@@ -51,77 +51,66 @@ class _InventarisIncluirNumeroSerieState
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: DefaultTextStyle(
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.normal),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              BuildDadosBem(),
-              SizedBox(
-                height: 10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          BuildDadosBem(),
+          StepTitle(title: "O bem tem Número de Série?"),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: ToggleSwitch(
+                  initialLabelIndex: initTemNumeroSerieValue,
+                  totalSwitches: 2,
+                  minWidth: (MediaQuery.of(context).size.width - 40) * .3,
+                  activeBgColor: [Theme.of(context).colorScheme.primary!],
+                  labels: ["Sim", "Não"],
+                  customTextStyles: [
+                    Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.background!),
+                  ],
+                  onToggle: (index) {
+                    setState(() {
+                      initTemNumeroSerieValue = index!;
+                      Globals().inventario.tem_numero_serie =
+                          index == 1 ? false : true!;
+                      if (index! == 1) {
+                        Globals().inventario.numero_serie = "";
+                        _controller1.text = "";
+                      }
+                    });
+                    widget.refreshStatusSteps();
+                  },
+                ),
               ),
-              StepTitle(title: "O bem tem Número de Série?"),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: ToggleSwitch(
-                      initialLabelIndex: initTemNumeroSerieValue,
-                      totalSwitches: 2,
-                      minWidth: (MediaQuery.of(context).size.width - 40) * .3,
-                      activeBgColor: [Theme.of(context).colorScheme.primary!],
-                      labels: ["Sim", "Não"],
-                      customTextStyles: [
-                        Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Theme.of(context).colorScheme.background!),
-                      ],
-                      onToggle: (index) {
-                        setState(() {
-                          initTemNumeroSerieValue = index!;
-                          Globals().inventario.tem_numero_serie =
-                              index == 1 ? false : true!;
-                          if (index! == 1) {
-                            Globals().inventario.numero_serie = "";
-                            _controller1.text = "";
-                          }
-                        });
-                        widget.refreshStatusSteps();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Globals().inventario.tem_numero_serie != null &&
-                      Globals().inventario.tem_numero_serie!
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AppTextField(
-                          textEditingController: _controller1,
-                          title: "Qual o número de série?",
-                          hint: "",
-                          isListSelected: false,
-                        ),
-                        // const StepTitle(
-                        //     title: "Qual o número de série do bem?"),
-                        // CustomTextField(
-                        //   label: "",
-                        //   controller: _controller,
-                        //   keyboardType: TextInputType.number,
-                        // ),
-                      ],
-                    )
-                  : SizedBox(),
             ],
           ),
-        ),
+          Globals().inventario.tem_numero_serie != null &&
+                  Globals().inventario.tem_numero_serie!
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppTextField(
+                      textEditingController: _controller1,
+                      title: "Qual o número de série?",
+                      hint: "",
+                      isListSelected: false,
+                    ),
+                    // const StepTitle(
+                    //     title: "Qual o número de série do bem?"),
+                    // CustomTextField(
+                    //   label: "",
+                    //   controller: _controller,
+                    //   keyboardType: TextInputType.number,
+                    // ),
+                  ],
+                )
+              : SizedBox(),
+        ],
       ),
     );
   }

@@ -7,21 +7,19 @@ import 'package:inventaris/entities/setor.dart';
 import 'package:inventaris/screens/common_widgets/step_title.dart';
 import 'package:inventaris/screens/inventario/components/build_dados_bem.dart';
 import 'package:inventaris/shared/globals.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
-class InventarisIncluirSituacao extends StatefulWidget {
+class InventarisIncluirSumary extends StatefulWidget {
   final VoidCallback refreshStatusSteps;
 
-  const InventarisIncluirSituacao(
-      {super.key, required this.refreshStatusSteps});
+  const InventarisIncluirSumary({super.key, required this.refreshStatusSteps});
 
   @override
-  State<InventarisIncluirSituacao> createState() {
-    return _InventarisIncluirSituacaoState();
+  State<InventarisIncluirSumary> createState() {
+    return _InventarisIncluirSumaryState();
   }
 }
 
-class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
+class _InventarisIncluirSumaryState extends State<InventarisIncluirSumary> {
   String host = "app-inventario.uerr.edu.br";
   int initSituacaoValue = 0;
   String initSetorName = "";
@@ -58,30 +56,7 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             BuildDadosBem(),
-            StepTitle(title: "O bem foi localizado?"),
-            Center(
-              child: ToggleSwitch(
-                initialLabelIndex: initSituacaoValue,
-                totalSwitches: 3,
-                minWidth: (MediaQuery.of(context).size.width - 40) * .3,
-                activeBgColor: [Theme.of(context).colorScheme.primary!],
-                labels: ["Sim", "Não", "Outro Setor"],
-                customTextStyles: [
-                  Theme.of(context).textTheme.displayMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.background!),
-                ],
-                onToggle: (index) {
-                  setState(() {
-                    initSituacaoValue = index!;
-                    Globals().inventario.situacao = index! + 1;
-                    if (index! + 1 != 3) {
-                      Globals().inventario.situacao_observacao = "";
-                    }
-                  });
-                  widget.refreshStatusSteps();
-                },
-              ),
-            ),
+            StepTitle(title: "O inventário deste bem está correto?"),
             Globals().inventario.situacao == 3
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

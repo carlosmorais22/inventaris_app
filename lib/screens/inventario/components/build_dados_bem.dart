@@ -8,13 +8,14 @@ class BuildDadosBem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.secondary,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: Column(
-        children: [
-          // StepTitle(title: "Dados do bem"),
-          Table(columnWidths: {
+    return Column(
+      children: [
+        // StepTitle(title: "Dados do bem"),
+        SizedBox(height: 5),
+        Container(
+          color: Theme.of(context).colorScheme.secondary,
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: Table(columnWidths: {
             0: FixedColumnWidth((MediaQuery.of(context).size.width - 40) * 0.2),
             1: FixedColumnWidth((MediaQuery.of(context).size.width - 40) * 0.8),
           }, children: [
@@ -55,8 +56,9 @@ class BuildDadosBem extends StatelessWidget {
               ], // Pass the widgets to be set as the row content.
             )
           ]),
-        ],
-      ),
+        ),
+        SizedBox(height: 5),
+      ],
     );
   }
 }

@@ -22,8 +22,9 @@ class DashoardTab extends StatefulWidget {
 
 class _DashoardTabState extends State<DashoardTab> {
   late Future<List> _carregarBens;
+  late bool carregouBens = false;
 
-  String host = "192.168.1.3:5009";
+  String host = "app-inventario.uerr.edu.br";
 
   int tamanhoTextoDescricao = 55;
   double larguraColunaTombo = 0.27;
@@ -40,6 +41,8 @@ class _DashoardTabState extends State<DashoardTab> {
       _carregarBens = _refreshBens();
     });
   }
+
+  List<TableRow> rowTableBens = [];
 
   @override
   void dispose() {
@@ -77,9 +80,10 @@ class _DashoardTabState extends State<DashoardTab> {
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: DefaultTextStyle(
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.normal),
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall!
+                .copyWith(fontWeight: FontWeight.normal),
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
@@ -132,8 +136,8 @@ class _DashoardTabState extends State<DashoardTab> {
                           text: 'enviar', onClickBtnTap: _printLatestValue)
                     ],
                   ),
-                  Text(textoDaPesquisa),
                   Container(
+                    padding: EdgeInsets.only(top: 10),
                     child: FutureBuilder(
                       future: _carregarBens,
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -196,14 +200,6 @@ class _DashoardTabState extends State<DashoardTab> {
             ),
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //     backgroundColor: Theme.of(context).colorScheme.surface,
-        //     foregroundColor: Theme.of(context).colorScheme.primary,
-        //     onPressed: () {
-        //       print('--------------------------------------');
-        //       print('Abrir tela de versão premium');
-        //       print('--------------------------------------');
-        //     })
       ),
     );
   }
@@ -212,7 +208,7 @@ class _DashoardTabState extends State<DashoardTab> {
     return TableRow(
       decoration: BoxDecoration(
         color: index.isOdd
-            ? Theme.of(context).colorScheme.inversePrimary
+            ? Theme.of(context).colorScheme.surface
             : Theme.of(context).colorScheme.tertiary,
       ),
       // key: ValueKey(operation.observation),
@@ -250,13 +246,13 @@ class _DashoardTabState extends State<DashoardTab> {
   Widget _buildTableCell(BuildContext context, String descricao, bool ehTitulo,
       String alinhamento) {
     TextStyle textStyle = Theme.of(context).textTheme.labelSmall!.copyWith(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.onSurface,
         fontWeight: FontWeight.normal);
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start;
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
     if (ehTitulo) {
       textStyle = Theme.of(context).textTheme.displaySmall!.copyWith(
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).colorScheme.onSurface,
           fontWeight: FontWeight.bold);
       mainAxisAlignment = MainAxisAlignment.center;
     }
@@ -289,6 +285,22 @@ class _DashoardTabState extends State<DashoardTab> {
     );
   }
 
+// Função assíncrona
+  Future<http.Response> pegarDados() async {
+    print("Buscando dados do ano ...");
+
+    var endPoint = '/api/ano';
+    // var url = Uri.parse(endPoint);
+    var url = Uri(scheme: 'http', host: host, path: endPoint);
+    // var url = Uri.http(host, endPoint, {'q': ''});
+
+    print("try url ->> " + url.toString());
+    // var url = Uri.http(host, endPoint, {'q': ''});
+    // print("try url " + host + endPoint);
+
+    return http.get(url);
+  }
+
   // retorna bens para o tipo e texto do filtro
   Future<List> _refreshBens() async {
     if (_controller.text.isEmpty) {
@@ -311,8 +323,8 @@ class _DashoardTabState extends State<DashoardTab> {
     var url = Uri.http(host, endPoint, {'q': ''});
 
     print("try url " + host + endPoint);
+
     var response = await http.get(url);
-    print(response);
     print(response.statusCode);
     if (response.statusCode == 201) {
       print(response.body);

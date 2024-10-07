@@ -79,75 +79,83 @@ class FormStepScreenState extends State<FormStepScreen> {
               },
             ),
           ]),
-      body: Container(
-        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-        color: Theme.of(context).colorScheme.onBackground,
-        child: Column(
-          children: [
-            widget.stepControlView
-                ? Container(
-                    height: 40,
-                    child: EasyStepper(
-                        padding: EdgeInsets.only(top: 10),
-                        activeStep: activeStep,
-                        activeStepTextColor: Colors.black87,
-                        finishedStepTextColor: Colors.black87,
-                        internalPadding: 0,
-                        showLoadingAnimation: false,
-                        stepRadius: 11,
-                        showStepBorder: false,
-                        // lineDotRadius: 1.5,
-                        steps: easySteps,
-                        onStepReached: (index) {
-                          setState(() {
-                            activeStep = index;
-                          });
-                        }),
-                  )
-                : SizedBox(),
-            Expanded(
-              child: widget.openScreen(activeStep),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: activeStep > 0
-                          ? CustonOutlinedButton(
-                              text: "Voltar",
-                              onClickBtnTap: () {
-                                setState(() {
-                                  KeyboardService.dismiss();
-                                  activeStep--;
-                                });
-                              })
-                          : const SizedBox(width: 20)),
-                  SizedBox(width: 15),
-                  Expanded(
-                      child: activeStep == widget.numberSteps - 1
-                          ? CustonElevatedButton(
-                              text: "Registrar",
-                              onClickBtnTap: widget.listStatus[activeStep]
-                                  ? () async {
-                                      widget.callbackRegister!();
-                                    }
-                                  : null,
-                            )
-                          : CustonElevatedButton(
-                              text: 'Próximo',
-                              onClickBtnTap: widget.listStatus[activeStep]
-                                  ? () {
-                                      setState(() {
-                                        KeyboardService.dismiss();
-                                        activeStep++;
-                                      });
-                                    }
-                                  : null)),
-                ],
+      body: DefaultTextStyle(
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontWeight: FontWeight.normal),
+        child: Container(
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+          color: Theme.of(context).colorScheme.onBackground,
+          child: Column(
+            children: [
+              widget.stepControlView
+                  ? Container(
+                      height: 40,
+                      child: EasyStepper(
+                          padding: EdgeInsets.only(top: 10),
+                          activeStep: activeStep,
+                          activeStepTextColor: Colors.black87,
+                          finishedStepTextColor: Colors.black87,
+                          internalPadding: 0,
+                          showLoadingAnimation: false,
+                          stepRadius: 11,
+                          showStepBorder: false,
+                          // lineDotRadius: 1.5,
+                          steps: easySteps,
+                          onStepReached: (index) {
+                            setState(() {
+                              activeStep = index;
+                            });
+                          }),
+                    )
+                  : SizedBox(),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[widget.openScreen(activeStep)]),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: activeStep > 0
+                            ? CustonOutlinedButton(
+                                text: "Voltar",
+                                onClickBtnTap: () {
+                                  setState(() {
+                                    KeyboardService.dismiss();
+                                    activeStep--;
+                                  });
+                                })
+                            : const SizedBox(width: 20)),
+                    SizedBox(width: 15),
+                    Expanded(
+                        child: activeStep == widget.numberSteps - 1
+                            ? CustonElevatedButton(
+                                text: "Registrar",
+                                onClickBtnTap: widget.listStatus[activeStep]
+                                    ? () async {
+                                        widget.callbackRegister!();
+                                      }
+                                    : null,
+                              )
+                            : CustonElevatedButton(
+                                text: 'Próximo',
+                                onClickBtnTap: widget.listStatus[activeStep]
+                                    ? () {
+                                        setState(() {
+                                          KeyboardService.dismiss();
+                                          activeStep++;
+                                        });
+                                      }
+                                    : null)),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     ));
