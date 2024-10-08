@@ -5,12 +5,14 @@ import 'package:back_pressed/back_pressed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 import 'package:inventaris/entities/bem.dart';
 import 'package:inventaris/screens/common_widgets/custom_text_field.dart';
 import 'package:inventaris/screens/common_widgets/custon_elevated_button.dart';
 import 'package:inventaris/screens/inventario/inventario_incluir_screen.dart';
 import 'package:inventaris/utils/app_alert.dart';
+import 'package:inventaris/utils/constants.dart';
 
 enum SingingCharacter { setor, tombo, descricao }
 
@@ -28,6 +30,7 @@ class _DashoardTabState extends State<DashoardTab> {
   String host = "app-inventario.uerr.edu.br";
 
   int tamanhoTextoDescricao = 55;
+  List<double> larguraColunas = [0.06, 0.26, 0.46, 0.22];
 
   final TextEditingController _controller = TextEditingController();
   String textoDaPesquisa = "";
@@ -41,6 +44,10 @@ class _DashoardTabState extends State<DashoardTab> {
   }
 
   List<TableRow> rowTableBens = [];
+
+  void _marcarItemComoNaoEncontrado(BuildContext context) {
+    print("AQUI");
+  }
 
   @override
   void dispose() {
@@ -56,7 +63,20 @@ class _DashoardTabState extends State<DashoardTab> {
 
   @override
   Widget build(BuildContext context) {
-    List<double> larguraColunas = [0.06, 0.26, 0.46, 0.22];
+
+    List<SlidableAction> listSlidableAction = [];
+    listSlidableAction.add(
+        SlidableAction(
+            onPressed: _marcarItemComoNaoEncontrado,
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            foregroundColor: Theme.of(context).colorScheme.onSurface,
+            icon: Icons.open_in_new,
+            label: "Bem não encontrado",
+            spacing: 3,
+            padding: EdgeInsets.zero
+        )
+    );
+
     return OnBackPressed(
       perform: () {
         AppAlert.confirm(
@@ -75,7 +95,7 @@ class _DashoardTabState extends State<DashoardTab> {
         dismissOnCapturedTaps: true,
         child: Scaffold(
           appBar: AppBar(
-            title: Text("Dashboard"),
+            title: Text(kTitulo),
           ),
           // drawer: MyDrawer(),
           body: SingleChildScrollView(
@@ -148,20 +168,10 @@ class _DashoardTabState extends State<DashoardTab> {
 
                             List<Bem> bens = [];
                             List<TableRow> rows = [];
+                            List<Widget> rows1 = [];
 
-                            rows.add(TableRow(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                              // key: ValueKey(operation.observation),
-                              children: [
-                                _buildTableCell(context, "x", true, "C"),
-                                _buildTableCell(context, "Tombo", true, "C"),
-                                _buildTableCell(
-                                    context, "Descrição", true, "C"),
-                                _buildTableCell(context, "Setor", true, "C"),
-                              ], // Pass the widgets to be set as the row content.
-                            ));
+                            List<dynamic> dados = ["", "Tombo", "Descrição", "Setor"];
+                            rows1.add(_buildRow(dados, 0, true));
                             for (Map<String, dynamic> item in list) {
                               Bem bem = Bem.fromMap(item);
                               String descricao = bem.descricao;
@@ -171,7 +181,28 @@ class _DashoardTabState extends State<DashoardTab> {
                                     "...";
                                 bem.descricao = descricao;
                               }
-                              rows.add(_buildTableRow(bem, list.indexOf(item)));
+                              dados = [bem.inventariado, bem.tombo, bem.descricao, bem.setor];
+                              rows1.add(GestureDetector(
+                                  onDoubleTap: () {
+                                    _inventariar(bem);
+                                  },
+                                  child: Slidable(
+                                    // Specify a key if the Slidable is dismissible.
+                                    key: const ValueKey(0),
+                                    // The start action pane is the one at the left or the top side.
+                                    startActionPane: ActionPane(
+                                      // A motion is a widget used to control how the pane animates.
+                                        motion: const ScrollMotion(),
+                                        // A pane can dismiss the Slidable.
+                                        dismissible: DismissiblePane(onDismissed: () {}),
+                                        dragDismissible: false,
+                                        // All actions are defined in the children parameter.
+                                        children: listSlidableAction
+                                    ),
+                                    // The child of the Slidable is what the user sees when the component is not dragged.
+                                    child: _buildRow(dados, list.indexOf(item), false)),
+                                  ),
+                              );
                               bens.add(bem);
                             }
                             return DefaultTextStyle(
@@ -183,20 +214,9 @@ class _DashoardTabState extends State<DashoardTab> {
                                             .colorScheme
                                             .primary,
                                         fontWeight: FontWeight.normal),
-                                child: Table(columnWidths: {
-                                  0: FixedColumnWidth(
-                                      MediaQuery.of(context).size.width *
-                                          larguraColunas[0]),
-                                  1: FixedColumnWidth(
-                                      MediaQuery.of(context).size.width *
-                                          larguraColunas[1]),
-                                  2: FixedColumnWidth(
-                                      MediaQuery.of(context).size.width *
-                                          larguraColunas[2]),
-                                  3: FixedColumnWidth(
-                                      MediaQuery.of(context).size.width *
-                                          larguraColunas[3]),
-                                }, children: rows));
+                                child: Column(
+                                  children: rows1
+                                ));
                           } else {
                             return Center(child: CircularProgressIndicator());
                           }
@@ -213,6 +233,41 @@ class _DashoardTabState extends State<DashoardTab> {
     );
   }
 
+  Widget _buildRow(List<dynamic> lista, int index, bool ehTitulo) {
+    return
+      Container(
+        width: double.infinity,
+        color: ehTitulo
+          ? Theme.of(context).colorScheme.secondary
+          : index.isOdd
+            ? Theme.of(context).colorScheme.surface
+            : Theme.of(context).colorScheme.tertiary,
+        child: Row(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width *
+                  larguraColunas[0],
+              child:
+                ehTitulo
+                  ? Text("")
+                  : lista[0] != null && lista[0]!
+                      ? Icon(
+                          Icons.verified,
+                          color: Colors.green,
+                          size: 18.0,
+                        )
+                      : SizedBox(),
+            ),
+            _buildCell(context, lista[1], ehTitulo, "L", 1),
+            Expanded(
+              child: _buildCell(context, lista[2], ehTitulo, "L", -1),
+            ),
+            _buildCell(context, lista[3], ehTitulo, "C", 3),
+          ],
+        ),
+      );
+  }
+
   TableRow _buildTableRow(Bem bem, int index) {
     return TableRow(
       decoration: BoxDecoration(
@@ -224,11 +279,11 @@ class _DashoardTabState extends State<DashoardTab> {
       children: [
         bem.inventariado != null && bem.inventariado!
             ? Icon(
-                Icons.verified,
-                color: Colors.green,
-                size: 18.0,
-                semanticLabel: 'Text to announce in accessibility modes',
-              )
+          Icons.verified,
+          color: Colors.green,
+          size: 18.0,
+          semanticLabel: 'Text to announce in accessibility modes',
+        )
             : SizedBox(),
         GestureDetector(
             onDoubleTap: () {
@@ -257,6 +312,48 @@ class _DashoardTabState extends State<DashoardTab> {
       MaterialPageRoute(
           builder: (context) => InventarioIncluirScreen(
               callback: _atualizarBemInventariado, bem: bem)),
+    );
+  }
+
+  Widget _buildCell(BuildContext context, String descricao, bool ehTitulo, String alinhamento, int index) {
+    TextStyle textStyle = Theme.of(context).textTheme.labelSmall!.copyWith(
+        color: Theme.of(context).colorScheme.onSurface,
+        fontWeight: FontWeight.normal);
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start;
+    MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
+    if (ehTitulo) {
+      textStyle = Theme.of(context).textTheme.displaySmall!.copyWith(
+          color: Theme.of(context).colorScheme.onSurface,
+          fontWeight: FontWeight.bold);
+      mainAxisAlignment = MainAxisAlignment.center;
+    }
+    if (alinhamento == "R") {
+      crossAxisAlignment = CrossAxisAlignment.end;
+    } else {
+      if (alinhamento == "C") {
+        crossAxisAlignment = CrossAxisAlignment.center;
+      }
+    }
+
+    return Container(
+      width: index > 0 ? MediaQuery.of(context).size.width * larguraColunas[index] : double.infinity,
+      padding: EdgeInsets.only(top: 3, bottom: 2),
+      // height: 40,
+      child: Column(
+        crossAxisAlignment: crossAxisAlignment,
+        mainAxisAlignment: mainAxisAlignment,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Wrap(
+            children: [
+              Text(
+                descricao,
+                style: textStyle,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
