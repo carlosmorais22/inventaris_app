@@ -2,8 +2,8 @@ import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:inventaris/screens/common_widgets/custon_elevated_button.dart';
 import 'package:inventaris/screens/common_widgets/custon_outlined_button.dart';
+import 'package:inventaris/utils/app_alert.dart';
 import 'package:inventaris/utils/constants.dart';
-import 'package:inventaris/utils/my_alert.dart';
 import 'package:keyboard_service/keyboard_service.dart';
 
 class FormStepScreen extends StatefulWidget {
@@ -112,10 +112,7 @@ class FormStepScreenState extends State<FormStepScreen> {
                     )
                   : SizedBox(),
               Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[widget.openScreen(activeStep)]),
+                child: widget.openScreen(activeStep),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -138,7 +135,7 @@ class FormStepScreenState extends State<FormStepScreen> {
                             ? CustonElevatedButton(
                                 text: kRegistrar,
                                 onClickBtnTap: widget.listStatus[activeStep]
-                                    ? () async {
+                                    ? () {
                                         widget.callbackRegister!();
                                       }
                                     : null,
@@ -164,9 +161,9 @@ class FormStepScreenState extends State<FormStepScreen> {
   }
 
   _cancelar() {
-    MyAlert.confirm(
-        title: "Atenção!!!",
-        text: "Deseja realmente sair?",
+    AppAlert.confirm(
+        title: kAtencao,
+        text: kDesejaSair,
         context: context,
         onConfirmBtnTap: () async {
           Navigator.pop(context);

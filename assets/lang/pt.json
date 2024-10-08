@@ -121,11 +121,11 @@
   "loan_add_type_operation_regressive": "Regressiva",
   "loan_add_rate": "Qual é a taxa de juros?",
 
-  "operation_register_date": "Qual a data do pagamento?",
-  "operation_register_date_detail": "A data de vencimento da parcela é ",
-  "operation_register_amount_paid": "Qual o valor do pagamento?",
-  "operation_register_amount_paid_detail": "O saldo a pagar da parcela é R$",
-  "operation_register_method": "Qual a forma de Pagamento?",
+  "operation_registrar_date": "Qual a data do pagamento?",
+  "operation_registrar_date_detail": "A data de vencimento da parcela é ",
+  "operation_registrar_amount_paid": "Qual o valor do pagamento?",
+  "operation_registrar_amount_paid_detail": "O saldo a pagar da parcela é R$",
+  "operation_registrar_method": "Qual a forma de Pagamento?",
 
   "installment_refinance_new_due_date": "Qual a nova data de vencimento da parcela?",
   "installment_refinance_new_due_date_detail": "A data atual da parcela é ",

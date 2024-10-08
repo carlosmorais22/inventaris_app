@@ -81,13 +81,13 @@ class WindowClassRegistrar {
 
   static WindowClassRegistrar* instance_;
 
-  bool class_registered_ = false;
+  bool class_registrared_ = false;
 };
 
 WindowClassRegistrar* WindowClassRegistrar::instance_ = nullptr;
 
 const wchar_t* WindowClassRegistrar::GetWindowClass() {
-  if (!class_registered_) {
+  if (!class_registrared_) {
     WNDCLASS window_class{};
     window_class.hCursor = LoadCursor(nullptr, IDC_ARROW);
     window_class.lpszClassName = kWindowClassName;
@@ -101,14 +101,14 @@ const wchar_t* WindowClassRegistrar::GetWindowClass() {
     window_class.lpszMenuName = nullptr;
     window_class.lpfnWndProc = Win32Window::WndProc;
     RegisterClass(&window_class);
-    class_registered_ = true;
+    class_registrared_ = true;
   }
   return kWindowClassName;
 }
 
 void WindowClassRegistrar::UnregisterWindowClass() {
   UnregisterClass(kWindowClassName, nullptr);
-  class_registered_ = false;
+  class_registrared_ = false;
 }
 
 Win32Window::Win32Window() {

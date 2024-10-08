@@ -3,12 +3,21 @@
 // App Title
 const kTitulo = 'Inventaris';
 
+const kHost = "app-inventario.uerr.edu.br";
+
 const kNaoInformado = "Não informado";
+const kOk = "Ok";
 const kSim = "Sim";
 const kNao = "Não";
 const kVoltar = "Voltar";
 const kRegistrar = "Registrar";
 const kProximo = "Próximo";
+
+const kError = "Error!!!";
+const kAtencao = "Atenção!!!";
+const kSucesso = "Sucesso!!!";
+const kDesejaSair = "Deseja realmente sair?";
+const kInventarioOk = "Bem inventariado com sucesso";
 
 // Bem
 const kBemTombo = "Tombo";
@@ -24,7 +33,8 @@ const kSetorOrigem = "No setor original";
 const kOutroSetor = "Em outro setor";
 
 const kSituacao = "Situação";
-const kTemNumeroSerie = "Tem núumero de série";
-const kNumeroSerie = "Núumero de série";
+const kSituacaoDescricao = "Outro setor";
+const kTemNumeroSerie = "Tem número de série";
+const kNumeroSerie = "Número de série";
 const kPlaqueta = "Tem plaqueta";
 const kEstadoBem = "Estado do bem";

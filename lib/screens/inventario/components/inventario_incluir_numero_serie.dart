@@ -23,7 +23,7 @@ class _InventarisIncluirNumeroSerieState
   // late int initTemNumeroSerieValue;
 
   List<String> _listaSituacoes = [kSim, kNao];
-  final _controller= TextEditingController();
+  final _controller = TextEditingController();
 
   void _printLatestValue() {
     setState(() {
@@ -43,15 +43,15 @@ class _InventarisIncluirNumeroSerieState
     super.initState();
     _controller.addListener(_printLatestValue);
     if (Globals().inventario.numero_serie != null)
-    _controller.text = Globals().inventario.numero_serie!;
+      _controller.text = Globals().inventario.numero_serie!;
   }
 
   @override
   Widget build(BuildContext context) {
-
     double _sizeWidth = MediaQuery.of(context).size.width;
 
-    return Container(
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -64,23 +64,29 @@ class _InventarisIncluirNumeroSerieState
             children: [
               Center(
                 child: ToggleSwitch(
-                  initialLabelIndex: Globals().inventario.tem_numero_serie != null && Globals().inventario.tem_numero_serie! ? 0 : 1,
+                  initialLabelIndex:
+                      Globals().inventario.tem_numero_serie != null &&
+                              Globals().inventario.tem_numero_serie!
+                          ? 0
+                          : 1,
                   totalSwitches: 2,
-                  customWidths: [ _sizeWidth * .4, _sizeWidth * .4 ],
-                  inactiveBgColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                  customWidths: [_sizeWidth * .4, _sizeWidth * .4],
+                  inactiveBgColor:
+                      Theme.of(context).colorScheme.onSurfaceVariant,
                   activeBgColor: [Theme.of(context).colorScheme.primary],
                   labels: _listaSituacoes,
-                  customTextStyles: [Theme.of(context).textTheme.displayMedium!],
+                  customTextStyles: [
+                    Theme.of(context).textTheme.displayMedium!
+                  ],
                   onToggle: (index) {
                     setState(() {
                       // initTemNumeroSerieValue = index!;
                       Globals().inventario.tem_numero_serie =
-                      index == 1 ? false : true!;
+                          index == 1 ? false : true!;
                       if (index! == 1) {
                         Globals().inventario.numero_serie = "";
                         _controller.text = "";
                       }
-                      Globals().inventario_tem_numero_serie = _listaSituacoes[index];
                     });
                     widget.refreshStatusSteps();
                   },
@@ -88,20 +94,21 @@ class _InventarisIncluirNumeroSerieState
               ),
             ],
           ),
-          Globals().inventario.tem_numero_serie != null && Globals().inventario.tem_numero_serie!
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AppTextField(
-                    textEditingController: _controller,
-                    title: "Qual o número de série?",
-                    hint: "",
-                    isListSelected: false,
-                  ),
-                ],
-              )
-            : SizedBox(),
+          Globals().inventario.tem_numero_serie != null &&
+                  Globals().inventario.tem_numero_serie!
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppTextField(
+                      textEditingController: _controller,
+                      title: "Qual o número de série?",
+                      hint: "",
+                      isListSelected: false,
+                    ),
+                  ],
+                )
+              : SizedBox(),
         ],
       ),
     );

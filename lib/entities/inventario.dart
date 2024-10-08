@@ -30,6 +30,25 @@ class Inventario {
       this.updated_at,
       this.deleted_at});
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id.toString();
+    data['ano'] = this.ano;
+    data['bem'] = this.bem;
+    data['estado'] = this.estado;
+    data['situacao'] = this.situacao;
+    data['plaqueta'] = this.plaqueta;
+    data['observacao'] = this.observacao;
+    data['cadastrado_por'] = this.cadastrado_por;
+    data['situacao_observacao'] = this.situacao_observacao;
+    data['tem_numero_serie'] = this.tem_numero_serie;
+    data['numero_serie'] = this.numero_serie;
+    data['created_at'] = this.created_at;
+    data['updated_at'] = this.updated_at;
+    data['deleted_at'] = this.deleted_at;
+    return data;
+  }
+
   factory Inventario.fromMap(Map<String, dynamic> map) => Inventario(
         id: map["id"],
         ano: map["ano"],

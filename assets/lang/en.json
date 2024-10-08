@@ -121,11 +121,11 @@
   "loan_add_type_operation_regressive": "Regressive",
   "loan_add_rate": "What is the interest rate?",
 
-  "operation_register_date": "What is the operation date?",
-  "operation_register_date_detail": "The installment due date is ",
-  "operation_register_amount_paid": "What is the operation amount?",
-  "operation_register_amount_paid_detail": "The balance payable for the installment is R$ ",
-  "operation_register_method": "What is the operation method?",
+  "operation_registrar_date": "What is the operation date?",
+  "operation_registrar_date_detail": "The installment due date is ",
+  "operation_registrar_amount_paid": "What is the operation amount?",
+  "operation_registrar_amount_paid_detail": "The balance payable for the installment is R$ ",
+  "operation_registrar_method": "What is the operation method?",
 
   "installment_refinance_new_due_date": "What is the new due date for the installment?",
   "installment_refinance_new_due_date_detail": "The current installment date is ",

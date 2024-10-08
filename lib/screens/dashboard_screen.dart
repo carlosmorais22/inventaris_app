@@ -4,12 +4,13 @@ import 'dart:io';
 import 'package:back_pressed/back_pressed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http/http.dart' as http;
 import 'package:inventaris/entities/bem.dart';
 import 'package:inventaris/screens/common_widgets/custom_text_field.dart';
 import 'package:inventaris/screens/common_widgets/custon_elevated_button.dart';
 import 'package:inventaris/screens/inventario/inventario_incluir_screen.dart';
-import 'package:inventaris/utils/my_alert.dart';
+import 'package:inventaris/utils/app_alert.dart';
 
 enum SingingCharacter { setor, tombo, descricao }
 
@@ -27,9 +28,6 @@ class _DashoardTabState extends State<DashoardTab> {
   String host = "app-inventario.uerr.edu.br";
 
   int tamanhoTextoDescricao = 55;
-  double larguraColunaTombo = 0.27;
-  double larguraColunaDescricao = 0.49;
-  double larguraColunaSetor = 0.24;
 
   final TextEditingController _controller = TextEditingController();
   String textoDaPesquisa = "";
@@ -58,9 +56,10 @@ class _DashoardTabState extends State<DashoardTab> {
 
   @override
   Widget build(BuildContext context) {
+    List<double> larguraColunas = [0.06, 0.26, 0.46, 0.22];
     return OnBackPressed(
       perform: () {
-        MyAlert.confirm(
+        AppAlert.confirm(
             title: "Atenção!!!",
             text: "Deseja realmente sair?",
             context: context,
@@ -72,130 +71,140 @@ class _DashoardTabState extends State<DashoardTab> {
               }
             });
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Dashboard"),
-        ),
-        // drawer: MyDrawer(),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: DefaultTextStyle(
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall!
-                .copyWith(fontWeight: FontWeight.normal),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Radio<SingingCharacter>(
-                          value: SingingCharacter.setor,
-                          groupValue: _character,
-                          onChanged: (SingingCharacter? value) {
-                            setState(() {
-                              _character = value;
-                            });
-                          }),
-                      const Text('Setor: '),
-                      Radio<SingingCharacter>(
-                          value: SingingCharacter.tombo,
-                          groupValue: _character,
-                          onChanged: (SingingCharacter? value) {
-                            setState(() {
-                              _character = value;
-                            });
-                          }),
-                      const Text('Tombo: '),
-                      Radio<SingingCharacter>(
-                          value: SingingCharacter.descricao,
-                          groupValue: _character,
-                          onChanged: (SingingCharacter? value) {
-                            setState(() {
-                              _character = value;
-                            });
-                          }),
-                      const Text('Descrição: '),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextField(
-                          label: "Digite um valor:",
-                          controller: _controller,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      CustonElevatedButton(
-                          text: 'enviar', onClickBtnTap: _printLatestValue)
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 10),
-                    child: FutureBuilder(
-                      future: _carregarBens,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          List list = snapshot.data;
-
-                          List<Bem> bens = [];
-                          List<TableRow> rows = [];
-
-                          rows.add(TableRow(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                            // key: ValueKey(operation.observation),
-                            children: [
-                              _buildTableCell(context, "Tombo", true, "C"),
-                              _buildTableCell(context, "Descrição", true, "C"),
-                              _buildTableCell(context, "Setor", true, "C"),
-                            ], // Pass the widgets to be set as the row content.
-                          ));
-                          for (Map<String, dynamic> item in list) {
-                            Bem bem = Bem.fromMap(item);
-                            String descricao = bem.descricao;
-                            if (descricao.length >= tamanhoTextoDescricao) {
-                              descricao = descricao.substring(
-                                      0, tamanhoTextoDescricao) +
-                                  "...";
-                              bem.descricao = descricao;
-                            }
-                            rows.add(_buildTableRow(bem, list.indexOf(item)));
-                            bens.add(bem);
-                          }
-                          return DefaultTextStyle(
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelSmall!
-                                  .copyWith(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontWeight: FontWeight.normal),
-                              child: Table(columnWidths: {
-                                0: FixedColumnWidth(
-                                    MediaQuery.of(context).size.width *
-                                        larguraColunaTombo),
-                                1: FixedColumnWidth(
-                                    MediaQuery.of(context).size.width *
-                                        larguraColunaDescricao),
-                                2: FixedColumnWidth(
-                                    MediaQuery.of(context).size.width *
-                                        larguraColunaSetor),
-                              }, children: rows));
-                        } else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      },
+      child: KeyboardDismissOnTap(
+        dismissOnCapturedTaps: true,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("Dashboard"),
+          ),
+          // drawer: MyDrawer(),
+          body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: DefaultTextStyle(
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall!
+                  .copyWith(fontWeight: FontWeight.normal),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Radio<SingingCharacter>(
+                            value: SingingCharacter.setor,
+                            groupValue: _character,
+                            onChanged: (SingingCharacter? value) {
+                              setState(() {
+                                _character = value;
+                              });
+                            }),
+                        const Text('Setor: '),
+                        Radio<SingingCharacter>(
+                            value: SingingCharacter.tombo,
+                            groupValue: _character,
+                            onChanged: (SingingCharacter? value) {
+                              setState(() {
+                                _character = value;
+                              });
+                            }),
+                        const Text('Tombo: '),
+                        Radio<SingingCharacter>(
+                            value: SingingCharacter.descricao,
+                            groupValue: _character,
+                            onChanged: (SingingCharacter? value) {
+                              setState(() {
+                                _character = value;
+                              });
+                            }),
+                        const Text('Descrição: '),
+                      ],
                     ),
-                  ),
-                ],
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            label: "Digite um valor:",
+                            controller: _controller,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        CustonElevatedButton(
+                            text: 'enviar', onClickBtnTap: _printLatestValue)
+                      ],
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: FutureBuilder(
+                        future: _carregarBens,
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            List list = snapshot.data;
+
+                            List<Bem> bens = [];
+                            List<TableRow> rows = [];
+
+                            rows.add(TableRow(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              // key: ValueKey(operation.observation),
+                              children: [
+                                _buildTableCell(context, "x", true, "C"),
+                                _buildTableCell(context, "Tombo", true, "C"),
+                                _buildTableCell(
+                                    context, "Descrição", true, "C"),
+                                _buildTableCell(context, "Setor", true, "C"),
+                              ], // Pass the widgets to be set as the row content.
+                            ));
+                            for (Map<String, dynamic> item in list) {
+                              Bem bem = Bem.fromMap(item);
+                              String descricao = bem.descricao;
+                              if (descricao.length >= tamanhoTextoDescricao) {
+                                descricao = descricao.substring(
+                                        0, tamanhoTextoDescricao) +
+                                    "...";
+                                bem.descricao = descricao;
+                              }
+                              rows.add(_buildTableRow(bem, list.indexOf(item)));
+                              bens.add(bem);
+                            }
+                            return DefaultTextStyle(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontWeight: FontWeight.normal),
+                                child: Table(columnWidths: {
+                                  0: FixedColumnWidth(
+                                      MediaQuery.of(context).size.width *
+                                          larguraColunas[0]),
+                                  1: FixedColumnWidth(
+                                      MediaQuery.of(context).size.width *
+                                          larguraColunas[1]),
+                                  2: FixedColumnWidth(
+                                      MediaQuery.of(context).size.width *
+                                          larguraColunas[2]),
+                                  3: FixedColumnWidth(
+                                      MediaQuery.of(context).size.width *
+                                          larguraColunas[3]),
+                                }, children: rows));
+                          } else {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -213,6 +222,14 @@ class _DashoardTabState extends State<DashoardTab> {
       ),
       // key: ValueKey(operation.observation),
       children: [
+        bem.inventariado != null && bem.inventariado!
+            ? Icon(
+                Icons.verified,
+                color: Colors.green,
+                size: 18.0,
+                semanticLabel: 'Text to announce in accessibility modes',
+              )
+            : SizedBox(),
         GestureDetector(
             onDoubleTap: () {
               _inventariar(bem);
@@ -238,8 +255,8 @@ class _DashoardTabState extends State<DashoardTab> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) =>
-              InventarioIncluirScreen(callback: () {}, bem: bem)),
+          builder: (context) => InventarioIncluirScreen(
+              callback: _atualizarBemInventariado, bem: bem)),
     );
   }
 
@@ -285,20 +302,10 @@ class _DashoardTabState extends State<DashoardTab> {
     );
   }
 
-// Função assíncrona
-  Future<http.Response> pegarDados() async {
-    print("Buscando dados do ano ...");
-
-    var endPoint = '/api/ano';
-    // var url = Uri.parse(endPoint);
-    var url = Uri(scheme: 'http', host: host, path: endPoint);
-    // var url = Uri.http(host, endPoint, {'q': ''});
-
-    print("try url ->> " + url.toString());
-    // var url = Uri.http(host, endPoint, {'q': ''});
-    // print("try url " + host + endPoint);
-
-    return http.get(url);
+  _atualizarBemInventariado(int idBem, bool resposta) {
+    if (resposta)
+      print('Bem com o id ' + idBem.toString() + ' foi realizado com sucesso');
+    _printLatestValue();
   }
 
   // retorna bens para o tipo e texto do filtro

@@ -23,7 +23,6 @@ class InventarisIncluirSituacao extends StatefulWidget {
 }
 
 class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
-  String host = "app-inventario.uerr.edu.br";
   String initSetorName = "";
 
   late Future<List> _carregarSetores;
@@ -52,74 +51,71 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
 
     double _sizeWidth = MediaQuery.of(context).size.width;
 
-    return Container(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            BuildDadosBem(),
-            StepTitle(title: kTelaSituacaoLocalizado),
-            Center(
-              child: ToggleSwitch(
-                initialLabelIndex: Globals().inventario.situacao - 1,
-                totalSwitches: 2,
-                customWidths: [ _sizeWidth * .4, _sizeWidth * .4 ],
-                inactiveBgColor: Theme.of(context).colorScheme.onSurfaceVariant,
-                activeBgColor: [Theme.of(context).colorScheme.primary],
-                labels: _listaSituacoes,
-                customTextStyles: [Theme.of(context).textTheme.titleMedium!],
-                onToggle: (index) {
-                  setState(() {
-                    Globals().inventario.situacao = index! + 1;
-                    Globals().inventario_situacao = _listaSituacoes[index];
-                    if (index! == 0) {
-                      Globals().inventario.situacao_observacao = "";
-                    }
-                  });
-                  widget.refreshStatusSteps();
-                },
-              ),
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          BuildDadosBem(),
+          StepTitle(title: kTelaSituacaoLocalizado),
+          Center(
+            child: ToggleSwitch(
+              initialLabelIndex: Globals().inventario.situacao - 1,
+              totalSwitches: 2,
+              customWidths: [_sizeWidth * .4, _sizeWidth * .4],
+              inactiveBgColor: Theme.of(context).colorScheme.onSurfaceVariant,
+              activeBgColor: [Theme.of(context).colorScheme.primary],
+              labels: _listaSituacoes,
+              customTextStyles: [Theme.of(context).textTheme.titleMedium!],
+              onToggle: (index) {
+                setState(() {
+                  Globals().inventario.situacao = index! + 1;
+                  Globals().inventario_situacao = _listaSituacoes[index];
+                  if (index! == 0) {
+                    Globals().inventario.situacao_observacao = "";
+                  }
+                });
+                widget.refreshStatusSteps();
+              },
             ),
-            Globals().inventario.situacao == 3
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      StepTitle(title: kTelaSituacaoQualSetor),
-                      EasyAutocomplete(
-                          initialValue: initSetorName,
-                          suggestions: suggestions,
-                          inputTextStyle:
-                              Theme.of(context).textTheme.titleMedium!,
-                          suggestionBuilder: (data) {
-                            return Container(
-                                margin: EdgeInsets.all(1),
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant),
-                                child: Text(data,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium));
-                          },
-                          onChanged: (value) =>
-                              print('onChanged value: $value'),
-                          onSubmitted: (value) {
-                            setState(() {
-                              Globals().inventario.situacao_observacao = value;
-                            });
-                            print(Globals().inventario.situacao_observacao);
-                            widget.refreshStatusSteps();
-                          }),
-                    ],
-                  )
-                : SizedBox(),
-          ],
-        ),
+          ),
+          Globals().inventario.situacao == 2
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    StepTitle(title: kTelaSituacaoQualSetor),
+                    EasyAutocomplete(
+                        initialValue: initSetorName,
+                        suggestions: suggestions,
+                        inputTextStyle:
+                            Theme.of(context).textTheme.titleMedium!,
+                        suggestionBuilder: (data) {
+                          return Container(
+                              margin: EdgeInsets.all(1),
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant),
+                              child: Text(data,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium));
+                        },
+                        onChanged: (value) => print('onChanged value: $value'),
+                        onSubmitted: (value) {
+                          setState(() {
+                            Globals().inventario.situacao_observacao = value;
+                          });
+                          print(Globals().inventario.situacao_observacao);
+                          widget.refreshStatusSteps();
+                        }),
+                  ],
+                )
+              : SizedBox(),
+        ],
       ),
     );
   }
@@ -127,9 +123,9 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
   // retorna bens para o tipo e texto do filtro
   Future<List> _refreshSetores() async {
     var endPoint = '/api/setor';
-    var url = Uri.http(host, endPoint, {'q': ''});
+    var url = Uri.http(kHost, endPoint, {'q': ''});
 
-    print("try url " + host + endPoint);
+    print("try url " + kHost + endPoint);
     var response = await http.get(url);
     if (response.statusCode == 201) {
       return convert.jsonDecode(response.body) as List<dynamic>;

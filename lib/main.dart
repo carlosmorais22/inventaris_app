@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: 40),
           displayLarge: TextStyle(
-            fontSize: MediaQuery.of(context).size.height / 34,
+            fontSize: MediaQuery.of(context).size.height / 28,
           ),
           displayMedium: TextStyle(
             fontSize: MediaQuery.of(context).size.height / 43,

@@ -12,6 +12,7 @@ class Bem {
   final String? data;
   final String data_aquisicao;
   final int ativo;
+  final bool? inventariado;
 
   Bem(
       {required this.id,
@@ -26,7 +27,8 @@ class Bem {
       required this.numero_serie,
       required this.data,
       required this.data_aquisicao,
-      required this.ativo});
+      required this.ativo,
+      required this.inventariado});
 
   factory Bem.fromMap(Map<String, dynamic> map) => Bem(
         id: map["id"],
@@ -42,6 +44,7 @@ class Bem {
         data: map["data"],
         data_aquisicao: map["data_aquisicao"],
         ativo: map["ativo"],
+        inventariado: map["inventariado"],
       );
 
   Map<String, dynamic> toMap() {
@@ -59,6 +62,7 @@ class Bem {
       'data': data,
       'data_aquisicao': data_aquisicao,
       'ativo': ativo,
+      'inventariado': inventariado,
     };
   }
 }
