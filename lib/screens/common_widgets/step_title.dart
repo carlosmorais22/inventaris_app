@@ -16,14 +16,14 @@ class StepTitle extends StatelessWidget {
         children: [
           title.isNotEmpty
               ? Text(title,
-                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.error,
                       ))
               : SizedBox(),
           subTitle.isEmpty
               ? SizedBox()
               : Text(subTitle,
-                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: Theme.of(context).colorScheme.secondary,
                       )),
           const SizedBox(

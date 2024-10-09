@@ -114,7 +114,13 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
       if (resposta.statusCode == 200) {
         print(resposta.body);
         widget.callback(widget.bem.id, true);
-        AppAlert.info(title: kSucesso, text: kInventarioOk, context: context);
+        AppAlert.info(
+            title: kSucesso,
+            text: kMsgInventarioOk,
+            context: context,
+            onConfirmBtnTap: () async {
+              Navigator.pop(context);
+            });
       } else {
         if (resposta.statusCode == 404) {
           print("resposta vazia");

@@ -4,6 +4,7 @@
 const kTitulo = 'Inventaris';
 
 const kHost = "app-inventario.uerr.edu.br";
+// const kHost = "192.168.1.9:5000";
 
 const kNaoInformado = "Não informado";
 const kOk = "Ok";
@@ -16,9 +17,12 @@ const kProximo = "Próximo";
 const kError = "Error!!!";
 const kAtencao = "Atenção!!!";
 const kSucesso = "Sucesso!!!";
-const kDesejaSair = "Deseja realmente sair?";
-const kInventarioOk = "Bem inventariado com sucesso";
 
+const kMsgDesejaSair = "Deseja realmente sair?";
+const kMsgInventarioOk = "Bem inventariado com sucesso";
+const kMsgInventarioNaoLocalizadoOk =
+    "Bem informado como não localizado com sucesso";
+const kMsgConfirmaBemNaoEncontraro = "Confirma que o bem não foi localizado?";
 // Bem
 const kBemTombo = "Tombo";
 const kBemDescricao = "Descrição";
@@ -28,6 +32,7 @@ const kBemEstado = "Estado";
 // Inventario
 const kTelaSituacaoLocalizado = "Onde o bem foi localizado?";
 const kTelaSituacaoQualSetor = "Em qual setor o bem foi localizado?";
+const kBemNaoLozalizado = "Informar bem não encontrado";
 
 const kSetorOrigem = "No setor original";
 const kOutroSetor = "Em outro setor";

@@ -12,7 +12,7 @@ class Bem {
   final String? data;
   final String data_aquisicao;
   final int ativo;
-  final bool? inventariado;
+  final int? inventariado;
 
   Bem(
       {required this.id,

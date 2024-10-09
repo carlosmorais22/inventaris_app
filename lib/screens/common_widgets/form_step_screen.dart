@@ -163,7 +163,7 @@ class FormStepScreenState extends State<FormStepScreen> {
   _cancelar() {
     AppAlert.confirm(
         title: kAtencao,
-        text: kDesejaSair,
+        text: kMsgDesejaSair,
         context: context,
         onConfirmBtnTap: () async {
           Navigator.pop(context);

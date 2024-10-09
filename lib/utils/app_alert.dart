@@ -59,7 +59,8 @@ class AppAlert {
   static Future<dynamic> info(
       {required String title,
       required String text,
-      required BuildContext context}) {
+      required BuildContext context,
+      VoidCallback? onConfirmBtnTap}) {
     return CoolAlert.show(
       context: context,
       type: CoolAlertType.info,
@@ -67,9 +68,9 @@ class AppAlert {
       title: title,
       text: text,
       confirmBtnText: kOk,
-      onConfirmBtnTap: () {
-        Navigator.pop(context);
-      },
+      // onConfirmBtnTap: () {
+      //   Navigator.pop(context);
+      // },
       titleTextStyle: Theme.of(context).textTheme.displayLarge!.copyWith(
           color: Theme.of(context).colorScheme.inversePrimary,
           fontWeight: FontWeight.w600),
@@ -80,6 +81,7 @@ class AppAlert {
       confirmBtnTextStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
           color: Theme.of(context).colorScheme.inversePrimary,
           fontWeight: FontWeight.w600),
+      onConfirmBtnTap: onConfirmBtnTap ?? () {},
     );
   }
 

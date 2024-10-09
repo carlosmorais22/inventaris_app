@@ -1,13 +1,16 @@
+import 'dart:async';
 import 'dart:convert' as convert;
 import 'dart:io';
 
 import 'package:back_pressed/back_pressed.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 import 'package:inventaris/entities/bem.dart';
+import 'package:inventaris/entities/inventario.dart';
 import 'package:inventaris/screens/common_widgets/custom_text_field.dart';
 import 'package:inventaris/screens/common_widgets/custon_elevated_button.dart';
 import 'package:inventaris/screens/inventario/inventario_incluir_screen.dart';
@@ -24,12 +27,13 @@ class DashoardTab extends StatefulWidget {
 }
 
 class _DashoardTabState extends State<DashoardTab> {
+  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+  Map<String, dynamic> _deviceData = <String, dynamic>{};
+
   late Future<List> _carregarBens;
   late bool carregouBens = false;
 
-  String host = "app-inventario.uerr.edu.br";
-
-  int tamanhoTextoDescricao = 55;
+  int tamanhoTextoDescricao = 75;
   List<double> larguraColunas = [0.06, 0.26, 0.46, 0.22];
 
   final TextEditingController _controller = TextEditingController();
@@ -45,8 +49,49 @@ class _DashoardTabState extends State<DashoardTab> {
 
   List<TableRow> rowTableBens = [];
 
-  void _marcarItemComoNaoEncontrado(BuildContext context) {
-    print("AQUI");
+  _registrarBemNaoLocalizado(int idBem) {
+    var endPoint = '/api/inventario';
+    var url = Uri.http(kHost, endPoint, {'q': ''});
+
+    print("try url " + kHost + endPoint);
+
+    Inventario inventario = Inventario(
+        ano: 2024,
+        bem: idBem,
+        situacao: 3,
+        cadastrado_por: 1,
+        situacao_observacao: "");
+
+    var body = convert.json.encode(inventario);
+    print(body);
+    var response = http.post(url,
+        headers: {
+          "Content-Type": "application/json",
+          "accept": "application/json"
+        },
+        body: body);
+
+    response.then((resposta) {
+      print(resposta.statusCode);
+      if (resposta.statusCode == 200) {
+        print(resposta.body);
+        // widget.callback(widget.bem.id, true);
+        AppAlert.info(
+            title: kSucesso,
+            text: kMsgInventarioNaoLocalizadoOk,
+            context: context);
+        setState(() {
+          _carregarBens = _refreshBens();
+        });
+      } else {
+        if (resposta.statusCode == 404) {
+          print("resposta vazia");
+        } else {
+          print('Request failed with status: ${resposta.statusCode}.');
+          throw Exception('Erro ao tentar acessar servidor externo');
+        }
+      }
+    });
   }
 
   @override
@@ -63,25 +108,11 @@ class _DashoardTabState extends State<DashoardTab> {
 
   @override
   Widget build(BuildContext context) {
-
-    List<SlidableAction> listSlidableAction = [];
-    listSlidableAction.add(
-        SlidableAction(
-            onPressed: _marcarItemComoNaoEncontrado,
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            foregroundColor: Theme.of(context).colorScheme.onSurface,
-            icon: Icons.open_in_new,
-            label: "Bem não encontrado",
-            spacing: 3,
-            padding: EdgeInsets.zero
-        )
-    );
-
     return OnBackPressed(
       perform: () {
         AppAlert.confirm(
-            title: "Atenção!!!",
-            text: "Deseja realmente sair?",
+            title: kAtencao,
+            text: kMsgDesejaSair,
             context: context,
             onConfirmBtnTap: () {
               if (Platform.isAndroid) {
@@ -170,7 +201,12 @@ class _DashoardTabState extends State<DashoardTab> {
                             List<TableRow> rows = [];
                             List<Widget> rows1 = [];
 
-                            List<dynamic> dados = ["", "Tombo", "Descrição", "Setor"];
+                            List<dynamic> dados = [
+                              "",
+                              "Tombo",
+                              "Descrição",
+                              "Setor"
+                            ];
                             rows1.add(_buildRow(dados, 0, true));
                             for (Map<String, dynamic> item in list) {
                               Bem bem = Bem.fromMap(item);
@@ -181,27 +217,55 @@ class _DashoardTabState extends State<DashoardTab> {
                                     "...";
                                 bem.descricao = descricao;
                               }
-                              dados = [bem.inventariado, bem.tombo, bem.descricao, bem.setor];
-                              rows1.add(GestureDetector(
+                              dados = [
+                                bem.inventariado,
+                                bem.tombo,
+                                bem.descricao,
+                                bem.setor
+                              ];
+                              rows1.add(
+                                GestureDetector(
                                   onDoubleTap: () {
                                     _inventariar(bem);
                                   },
                                   child: Slidable(
-                                    // Specify a key if the Slidable is dismissible.
-                                    key: const ValueKey(0),
-                                    // The start action pane is the one at the left or the top side.
-                                    startActionPane: ActionPane(
-                                      // A motion is a widget used to control how the pane animates.
-                                        motion: const ScrollMotion(),
-                                        // A pane can dismiss the Slidable.
-                                        dismissible: DismissiblePane(onDismissed: () {}),
-                                        dragDismissible: false,
-                                        // All actions are defined in the children parameter.
-                                        children: listSlidableAction
-                                    ),
-                                    // The child of the Slidable is what the user sees when the component is not dragged.
-                                    child: _buildRow(dados, list.indexOf(item), false)),
-                                  ),
+                                      key: const ValueKey(0),
+                                      startActionPane: ActionPane(
+                                          motion: const ScrollMotion(),
+                                          dismissible: DismissiblePane(
+                                              onDismissed: () {}),
+                                          dragDismissible: false,
+                                          children: [
+                                            SlidableAction(
+                                                onPressed: (context) {
+                                                  AppAlert.confirm(
+                                                      title: kAtencao,
+                                                      text:
+                                                          kMsgConfirmaBemNaoEncontraro,
+                                                      context: context,
+                                                      onConfirmBtnTap: () {
+                                                        _registrarBemNaoLocalizado(
+                                                            bem.id);
+                                                      });
+                                                  print(bem.id);
+                                                },
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .inversePrimary,
+                                                foregroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurface,
+                                                icon: Icons.fmd_bad,
+                                                label: kBemNaoLozalizado,
+                                                spacing: 5,
+                                                padding: EdgeInsets.zero)
+                                          ]),
+                                      // The child of the Slidable is what the user sees when the component is not dragged.
+                                      child: _buildRow(
+                                          dados, list.indexOf(item), false)),
+                                ),
                               );
                               bens.add(bem);
                             }
@@ -214,9 +278,7 @@ class _DashoardTabState extends State<DashoardTab> {
                                             .colorScheme
                                             .primary,
                                         fontWeight: FontWeight.normal),
-                                child: Column(
-                                  children: rows1
-                                ));
+                                child: Column(children: rows1));
                           } else {
                             return Center(child: CircularProgressIndicator());
                           }
@@ -234,75 +296,42 @@ class _DashoardTabState extends State<DashoardTab> {
   }
 
   Widget _buildRow(List<dynamic> lista, int index, bool ehTitulo) {
-    return
-      Container(
-        width: double.infinity,
-        color: ehTitulo
+    return Container(
+      constraints: BoxConstraints(
+          minHeight: ehTitulo ? 10 : 45, minWidth: double.infinity),
+      // width: double.infinity,
+      color: ehTitulo
           ? Theme.of(context).colorScheme.secondary
           : index.isOdd
-            ? Theme.of(context).colorScheme.surface
-            : Theme.of(context).colorScheme.tertiary,
-        child: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width *
-                  larguraColunas[0],
-              child:
-                ehTitulo
-                  ? Text("")
-                  : lista[0] != null && lista[0]!
-                      ? Icon(
-                          Icons.verified,
-                          color: Colors.green,
-                          size: 18.0,
-                        )
-                      : SizedBox(),
-            ),
-            _buildCell(context, lista[1], ehTitulo, "L", 1),
-            Expanded(
-              child: _buildCell(context, lista[2], ehTitulo, "L", -1),
-            ),
-            _buildCell(context, lista[3], ehTitulo, "C", 3),
-          ],
-        ),
-      );
-  }
-
-  TableRow _buildTableRow(Bem bem, int index) {
-    return TableRow(
-      decoration: BoxDecoration(
-        color: index.isOdd
-            ? Theme.of(context).colorScheme.surface
-            : Theme.of(context).colorScheme.tertiary,
+              ? Theme.of(context).colorScheme.surface
+              : Theme.of(context).colorScheme.tertiary,
+      child: Row(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * larguraColunas[0],
+            child: ehTitulo
+                ? Text("")
+                : lista[0] != null
+                    ? lista[0]! == 3
+                        ? Icon(
+                            Icons.verified,
+                            color: Colors.deepOrange,
+                            size: 18.0,
+                          )
+                        : Icon(
+                            Icons.verified,
+                            color: Colors.green,
+                            size: 18.0,
+                          )
+                    : SizedBox(),
+          ),
+          _buildCell(context, lista[1], ehTitulo, "L", 1),
+          Expanded(
+            child: _buildCell(context, lista[2], ehTitulo, "L", -1),
+          ),
+          _buildCell(context, lista[3], ehTitulo, "C", 3),
+        ],
       ),
-      // key: ValueKey(operation.observation),
-      children: [
-        bem.inventariado != null && bem.inventariado!
-            ? Icon(
-          Icons.verified,
-          color: Colors.green,
-          size: 18.0,
-          semanticLabel: 'Text to announce in accessibility modes',
-        )
-            : SizedBox(),
-        GestureDetector(
-            onDoubleTap: () {
-              _inventariar(bem);
-            },
-            child: _buildTableCell(context, bem.tombo, false, "L")),
-        GestureDetector(
-          onDoubleTap: () {
-            _inventariar(bem);
-          },
-          child: _buildTableCell(context, bem.descricao, false, "L"),
-        ),
-        GestureDetector(
-          onDoubleTap: () {
-            _inventariar(bem);
-          },
-          child: _buildTableCell(context, bem.setor, false, "C"),
-        ),
-      ], // Pass the widgets to be set as the row content.
     );
   }
 
@@ -315,7 +344,8 @@ class _DashoardTabState extends State<DashoardTab> {
     );
   }
 
-  Widget _buildCell(BuildContext context, String descricao, bool ehTitulo, String alinhamento, int index) {
+  Widget _buildCell(BuildContext context, String descricao, bool ehTitulo,
+      String alinhamento, int index) {
     TextStyle textStyle = Theme.of(context).textTheme.labelSmall!.copyWith(
         color: Theme.of(context).colorScheme.onSurface,
         fontWeight: FontWeight.normal);
@@ -336,49 +366,9 @@ class _DashoardTabState extends State<DashoardTab> {
     }
 
     return Container(
-      width: index > 0 ? MediaQuery.of(context).size.width * larguraColunas[index] : double.infinity,
-      padding: EdgeInsets.only(top: 3, bottom: 2),
-      // height: 40,
-      child: Column(
-        crossAxisAlignment: crossAxisAlignment,
-        mainAxisAlignment: mainAxisAlignment,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Wrap(
-            children: [
-              Text(
-                descricao,
-                style: textStyle,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTableCell(BuildContext context, String descricao, bool ehTitulo,
-      String alinhamento) {
-    TextStyle textStyle = Theme.of(context).textTheme.labelSmall!.copyWith(
-        color: Theme.of(context).colorScheme.onSurface,
-        fontWeight: FontWeight.normal);
-    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start;
-    MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
-    if (ehTitulo) {
-      textStyle = Theme.of(context).textTheme.displaySmall!.copyWith(
-          color: Theme.of(context).colorScheme.onSurface,
-          fontWeight: FontWeight.bold);
-      mainAxisAlignment = MainAxisAlignment.center;
-    }
-    if (alinhamento == "R") {
-      crossAxisAlignment = CrossAxisAlignment.end;
-    } else {
-      if (alinhamento == "C") {
-        crossAxisAlignment = CrossAxisAlignment.center;
-      }
-    }
-
-    return Container(
+      width: index > 0
+          ? MediaQuery.of(context).size.width * larguraColunas[index]
+          : double.infinity,
       padding: EdgeInsets.only(top: 3, bottom: 2),
       // height: 40,
       child: Column(
@@ -424,9 +414,9 @@ class _DashoardTabState extends State<DashoardTab> {
       default:
         endPoint = '/api/bem/setor/' + _controller.text;
     }
-    var url = Uri.http(host, endPoint, {'q': ''});
+    var url = Uri.http(kHost, endPoint, {'q': ''});
 
-    print("try url " + host + endPoint);
+    print("try url " + kHost + endPoint);
 
     var response = await http.get(url);
     print(response.statusCode);

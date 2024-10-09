@@ -2,6 +2,13 @@
   <library name="Dart Packages" type="DartPackagesLibraryType">
     <properties>
       <option name="packageNameToDirsMap">
+        <entry key="android_id">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/android_id-0.4.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="another_xlider">
           <value>
             <list>
@@ -93,10 +100,17 @@
             </list>
           </value>
         </entry>
-        <entry key="data_table_2">
+        <entry key="device_info_plus">
           <value>
             <list>
-              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/data_table_2-2.5.15/lib" />
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/device_info_plus-10.1.2/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="device_info_plus_platform_interface">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/device_info_plus_platform_interface-7.0.1/lib" />
             </list>
           </value>
         </entry>
@@ -166,7 +180,7 @@
         <entry key="flutter">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter/lib" />
+              <option value="$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter/lib" />
             </list>
           </value>
         </entry>
@@ -229,7 +243,7 @@
         <entry key="flutter_localizations">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_localizations/lib" />
+              <option value="$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_localizations/lib" />
             </list>
           </value>
         </entry>
@@ -243,14 +257,14 @@
         <entry key="flutter_test">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_test/lib" />
+              <option value="$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_test/lib" />
             </list>
           </value>
         </entry>
         <entry key="flutter_web_plugins">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_web_plugins/lib" />
+              <option value="$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_web_plugins/lib" />
             </list>
           </value>
         </entry>
@@ -446,7 +460,7 @@
         <entry key="sky_engine">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/bin/cache/pkg/sky_engine/lib" />
+              <option value="$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/bin/cache/pkg/sky_engine/lib" />
             </list>
           </value>
         </entry>
@@ -527,6 +541,20 @@
             </list>
           </value>
         </entry>
+        <entry key="win32">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/win32-5.5.5/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="win32_registry">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/win32_registry-1.1.5/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="xdg_directories">
           <value>
             <list>
@@ -537,6 +565,7 @@
       </option>
     </properties>
     <CLASSES>
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/android_id-0.4.0/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/another_xlider-3.0.2/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.6.1/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.11.0/lib" />
@@ -550,7 +579,8 @@
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/cool_alert-2.0.1/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.5/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/cupertino_icons-1.0.8/lib" />
-      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/data_table_2-2.5.15/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/device_info_plus-10.1.2/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/device_info_plus_platform_interface-7.0.1/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.7.0/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/dio_web_adapter-2.0.0/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/drop_down_list-0.0.8/lib" />
@@ -607,12 +637,14 @@
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.1.4/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/vm_service-14.2.5/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/web-1.1.0/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/win32-5.5.5/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/win32_registry-1.1.5/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/xdg_directories-1.0.4/lib" />
-      <root url="file://$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/bin/cache/pkg/sky_engine/lib" />
-      <root url="file://$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter/lib" />
-      <root url="file://$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_localizations/lib" />
-      <root url="file://$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_test/lib" />
-      <root url="file://$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_web_plugins/lib" />
+      <root url="file://$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/bin/cache/pkg/sky_engine/lib" />
+      <root url="file://$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter/lib" />
+      <root url="file://$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_localizations/lib" />
+      <root url="file://$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_test/lib" />
+      <root url="file://$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_web_plugins/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

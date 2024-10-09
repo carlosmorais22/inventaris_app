@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inventaris/screens/dashboard_screen.dart';
+import 'package:inventaris/screens/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: 40),
           displayLarge: TextStyle(
-            fontSize: MediaQuery.of(context).size.height / 28,
+            fontSize: MediaQuery.of(context).size.height / 32,
           ),
           displayMedium: TextStyle(
             fontSize: MediaQuery.of(context).size.height / 43,
@@ -87,7 +87,7 @@ class MyApp extends StatelessWidget {
           // bodyMedium: GoogleFonts.merriweather(),
         ),
       ),
-      home: const DashoardTab(),
+      home: const DeviceInfo(),
     );
   }
 }
