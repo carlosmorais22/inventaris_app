@@ -1,12 +1,10 @@
-import 'dart:convert' as convert;
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:inventaris/entities/inventario.dart';
 import 'package:inventaris/entities/setor.dart';
 import 'package:inventaris/screens/common_widgets/step_title.dart';
 import 'package:inventaris/screens/inventario/components/build_dados_bem.dart';
 import 'package:inventaris/shared/globals.dart';
+import 'package:inventaris/utils/app_http.dart' as AppHttp;
 import 'package:inventaris/utils/constants.dart';
 
 class InventarisIncluirResumo extends StatefulWidget {
@@ -21,7 +19,6 @@ class InventarisIncluirResumo extends StatefulWidget {
 }
 
 class _InventarisIncluirResumoState extends State<InventarisIncluirResumo> {
-  String host = "app-inventario.uerr.edu.br";
   int initSituacaoValue = 0;
   String initSetorName = "";
 
@@ -31,7 +28,7 @@ class _InventarisIncluirResumoState extends State<InventarisIncluirResumo> {
 
   @override
   void initState() {
-    _carregarBens = _refreshSetores();
+    _carregarBens = AppHttp.list('/api/setor');
     super.initState();
   }
 
@@ -60,7 +57,7 @@ class _InventarisIncluirResumoState extends State<InventarisIncluirResumo> {
             BuildDadosBem(),
             StepTitle(title: "O inventário deste bem está correto?"),
             Container(
-              color: Theme.of(context).colorScheme.onBackground,
+              color: Theme.of(context).colorScheme.surface,
               child: Column(
                 children: [
                   _buildPadding(
@@ -115,21 +112,6 @@ class _InventarisIncluirResumoState extends State<InventarisIncluirResumo> {
         ),
       ),
     );
-  }
-
-  // retorna bens para o tipo e texto do filtro
-  Future<List> _refreshSetores() async {
-    var endPoint = '/api/setor';
-    var url = Uri.http(host, endPoint, {'q': ''});
-
-    print("try url " + host + endPoint);
-    var response = await http.get(url);
-    if (response.statusCode == 201) {
-      return convert.jsonDecode(response.body) as List<dynamic>;
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-      return [];
-    }
   }
 
   Widget _buildPadding(

@@ -1,12 +1,10 @@
-import 'dart:convert' as convert;
-
 import 'package:easy_autocomplete/easy_autocomplete.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:inventaris/entities/setor.dart';
 import 'package:inventaris/screens/common_widgets/step_title.dart';
 import 'package:inventaris/screens/inventario/components/build_dados_bem.dart';
 import 'package:inventaris/shared/globals.dart';
+import 'package:inventaris/utils/app_http.dart' as AppHttp;
 import 'package:inventaris/utils/constants.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -123,15 +121,6 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
   // retorna bens para o tipo e texto do filtro
   Future<List> _refreshSetores() async {
     var endPoint = '/api/setor';
-    var url = Uri.http(kHost, endPoint, {'q': ''});
-
-    print("try url " + kHost + endPoint);
-    var response = await http.get(url);
-    if (response.statusCode == 201) {
-      return convert.jsonDecode(response.body) as List<dynamic>;
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-      return [];
-    }
+    return AppHttp.list(endPoint);
   }
 }

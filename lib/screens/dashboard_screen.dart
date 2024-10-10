@@ -3,18 +3,19 @@ import 'dart:convert' as convert;
 import 'dart:io';
 
 import 'package:back_pressed/back_pressed.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:http/http.dart' as http;
 import 'package:inventaris/entities/bem.dart';
 import 'package:inventaris/entities/inventario.dart';
 import 'package:inventaris/screens/common_widgets/custom_text_field.dart';
 import 'package:inventaris/screens/common_widgets/custon_elevated_button.dart';
+import 'package:inventaris/screens/dispositivo/dispositivo_screen.dart';
 import 'package:inventaris/screens/inventario/inventario_incluir_screen.dart';
+import 'package:inventaris/shared/globals.dart';
 import 'package:inventaris/utils/app_alert.dart';
+import 'package:inventaris/utils/app_http.dart' as AppHttp;
 import 'package:inventaris/utils/constants.dart';
 
 enum SingingCharacter { setor, tombo, descricao }
@@ -27,9 +28,6 @@ class DashoardTab extends StatefulWidget {
 }
 
 class _DashoardTabState extends State<DashoardTab> {
-  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  Map<String, dynamic> _deviceData = <String, dynamic>{};
-
   late Future<List> _carregarBens;
   late bool carregouBens = false;
 
@@ -41,19 +39,16 @@ class _DashoardTabState extends State<DashoardTab> {
 
   SingingCharacter? _character = SingingCharacter.setor;
 
-  void _printLatestValue() {
+  void _atualizarPagina() {
     setState(() {
       _carregarBens = _refreshBens();
     });
   }
 
-  List<TableRow> rowTableBens = [];
+  List<TableRow> rowTable = [];
 
   _registrarBemNaoLocalizado(int idBem) {
     var endPoint = '/api/inventario';
-    var url = Uri.http(kHost, endPoint, {'q': ''});
-
-    print("try url " + kHost + endPoint);
 
     Inventario inventario = Inventario(
         ano: 2024,
@@ -64,18 +59,17 @@ class _DashoardTabState extends State<DashoardTab> {
 
     var body = convert.json.encode(inventario);
     print(body);
-    var response = http.post(url,
-        headers: {
-          "Content-Type": "application/json",
-          "accept": "application/json"
-        },
-        body: body);
+
+    Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "accept": "application/json"
+    };
+    var response = AppHttp.post(endPoint, headers, body);
 
     response.then((resposta) {
       print(resposta.statusCode);
       if (resposta.statusCode == 200) {
         print(resposta.body);
-        // widget.callback(widget.bem.id, true);
         AppAlert.info(
             title: kSucesso,
             text: kMsgInventarioNaoLocalizadoOk,
@@ -127,6 +121,19 @@ class _DashoardTabState extends State<DashoardTab> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(kTitulo),
+            actions: <Widget>[
+              Globals().esteDispositivo.is_adm!
+                  ? IconButton(
+                      icon: Icon(
+                        Icons.settings_cell,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        _exibirDispositivos();
+                      },
+                    )
+                  : SizedBox(),
+            ],
           ),
           // drawer: MyDrawer(),
           body: SingleChildScrollView(
@@ -185,7 +192,7 @@ class _DashoardTabState extends State<DashoardTab> {
                           width: 10,
                         ),
                         CustonElevatedButton(
-                            text: 'enviar', onClickBtnTap: _printLatestValue)
+                            text: 'enviar', onClickBtnTap: _atualizarPagina)
                       ],
                     ),
                     Container(
@@ -198,8 +205,7 @@ class _DashoardTabState extends State<DashoardTab> {
                             List list = snapshot.data;
 
                             List<Bem> bens = [];
-                            List<TableRow> rows = [];
-                            List<Widget> rows1 = [];
+                            List<Widget> rows = [];
 
                             List<dynamic> dados = [
                               "",
@@ -207,7 +213,7 @@ class _DashoardTabState extends State<DashoardTab> {
                               "Descrição",
                               "Setor"
                             ];
-                            rows1.add(_buildRow(dados, 0, true));
+                            rows.add(_buildRow(dados, 0, true));
                             for (Map<String, dynamic> item in list) {
                               Bem bem = Bem.fromMap(item);
                               String descricao = bem.descricao;
@@ -223,7 +229,7 @@ class _DashoardTabState extends State<DashoardTab> {
                                 bem.descricao,
                                 bem.setor
                               ];
-                              rows1.add(
+                              rows.add(
                                 GestureDetector(
                                   onDoubleTap: () {
                                     _inventariar(bem);
@@ -278,7 +284,7 @@ class _DashoardTabState extends State<DashoardTab> {
                                             .colorScheme
                                             .primary,
                                         fontWeight: FontWeight.normal),
-                                child: Column(children: rows1));
+                                child: Column(children: rows));
                           } else {
                             return Center(child: CircularProgressIndicator());
                           }
@@ -344,6 +350,14 @@ class _DashoardTabState extends State<DashoardTab> {
     );
   }
 
+  _exibirDispositivos() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DispositivoScreen(),
+        ));
+  }
+
   Widget _buildCell(BuildContext context, String descricao, bool ehTitulo,
       String alinhamento, int index) {
     TextStyle textStyle = Theme.of(context).textTheme.labelSmall!.copyWith(
@@ -392,7 +406,7 @@ class _DashoardTabState extends State<DashoardTab> {
   _atualizarBemInventariado(int idBem, bool resposta) {
     if (resposta)
       print('Bem com o id ' + idBem.toString() + ' foi realizado com sucesso');
-    _printLatestValue();
+    _atualizarPagina();
   }
 
   // retorna bens para o tipo e texto do filtro
@@ -414,18 +428,6 @@ class _DashoardTabState extends State<DashoardTab> {
       default:
         endPoint = '/api/bem/setor/' + _controller.text;
     }
-    var url = Uri.http(kHost, endPoint, {'q': ''});
-
-    print("try url " + kHost + endPoint);
-
-    var response = await http.get(url);
-    print(response.statusCode);
-    if (response.statusCode == 201) {
-      print(response.body);
-      return convert.jsonDecode(response.body) as List<dynamic>;
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-      return [];
-    }
+    return AppHttp.list(endPoint);
   }
 }

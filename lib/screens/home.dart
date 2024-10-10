@@ -5,9 +5,11 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
+import 'package:inventaris/entities/dispositivo.dart';
 import 'package:inventaris/screens/dashboard_screen.dart';
 import 'package:inventaris/screens/desabilitado_screen.dart';
+import 'package:inventaris/shared/globals.dart';
+import 'package:inventaris/utils//app_http.dart' as AppHttp;
 import 'package:inventaris/utils/constants.dart';
 
 class DeviceInfo extends StatefulWidget {
@@ -166,27 +168,45 @@ class _DeviceInfoState extends State<DeviceInfo> {
     _resposta.then((deviceData) {
       setState(() {
         _deviceData = deviceData;
-        print("#####################################");
-        print("#####################################");
         idDispositivo = deviceData['id'];
-        print("id = " + idDispositivo);
         modeloDispositivo = deviceData['model'];
-        print("modelo = " + modeloDispositivo);
         fabricanteDispositivo = deviceData['manufacturer'];
-        print("fabricante = " + fabricanteDispositivo);
-        print("#####################################");
-        print("#####################################");
         Future<Map<String, dynamic>> resultado = _refreshUsuario(idDispositivo);
-        resultado.then((usuario) {
+        resultado.then((resposta) {
           setState(() {
-            print("-------------------------------------");
-            print("-------------------------------------");
-            habilitado = usuario.length > 0;
-            print(habilitado);
-            print("-------------------------------------");
-            print("-------------------------------------");
+            if (resposta.length <= 0) {
+              // NAO LOCALIZADO
+              Dispositivo novoDispositivo = Dispositivo(
+                  id: idDispositivo,
+                  modelo: modeloDispositivo,
+                  fabricante: fabricanteDispositivo,
+                  status: false,
+                  is_adm: false);
+              var response = AppHttp.post(
+                  '/api/dispositivo',
+                  {
+                    "Content-Type": "application/json",
+                    "accept": "application/json"
+                  },
+                  convert.json.encode(novoDispositivo));
+              print(response);
+            }
+            Globals().esteDispositivo = Dispositivo.fromMap(resposta);
+            print("#############################################");
+            print("#############################################");
+            print(Globals().esteDispositivo.toJson());
+            print("#############################################");
+            print("#############################################");
+            habilitado = resposta.length > 0 &&
+                resposta['status'] &&
+                resposta['cpf'] != null &&
+                resposta['cpf'] != "" &&
+                resposta['nome'] != null &&
+                resposta['nome'] != "";
             finalizou_teste = true;
           });
+        }).catchError((onError) {
+          print(onError);
         });
       });
     });
@@ -256,16 +276,7 @@ class _DeviceInfoState extends State<DeviceInfo> {
 
   // retorna bens para o tipo e texto do filtro
   Future<Map<String, dynamic>> _refreshUsuario(String idDispositivo) async {
-    var endPoint = '/api/usuario/' + idDispositivo;
-    var url = Uri.http(kHost, endPoint, {'q': ''});
-
-    var response = await http.get(url);
-    print(response.body);
-    if (response.statusCode == 201) {
-      return convert.jsonDecode(response.body) as Map<String, dynamic>;
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-      return {};
-    }
+    var endPoint = '/api/dispositivo/' + idDispositivo;
+    return AppHttp.get(endPoint);
   }
 }

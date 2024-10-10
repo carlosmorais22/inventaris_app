@@ -21,7 +21,6 @@ class _InventarisIncluirObservacaoState
   /// This is list of city which will pass to the drop down.
   final TextEditingController _observacaoController = TextEditingController();
 
-  String host = "app-inventario.uerr.edu.br";
   int initTemPlaquetaValue = 0;
 
   void _observacaoControllerEvent() {

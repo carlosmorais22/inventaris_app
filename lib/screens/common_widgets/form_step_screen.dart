@@ -69,8 +69,7 @@ class FormStepScreenState extends State<FormStepScreen> {
               : SizedBox(),
           titleSpacing: 0,
           title: Text(widget.title,
-              style:
-                  TextStyle(color: Theme.of(context).colorScheme.onBackground)),
+              style: TextStyle(color: Theme.of(context).colorScheme.surface)),
           elevation: 0,
           actions: <Widget>[
             IconButton(
@@ -86,7 +85,7 @@ class FormStepScreenState extends State<FormStepScreen> {
             fontWeight: FontWeight.normal),
         child: Container(
           padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-          color: Theme.of(context).colorScheme.onBackground,
+          color: Theme.of(context).colorScheme.surface,
           child: Column(
             children: [
               widget.stepControlView

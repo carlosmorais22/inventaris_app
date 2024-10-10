@@ -9,7 +9,8 @@ class CustonElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      constraints: BoxConstraints(minWidth: 120),
       height: 40,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -24,7 +25,7 @@ class CustonElevatedButton extends StatelessWidget {
           style: Theme.of(context).textTheme.displayMedium!.copyWith(
               color: onClickBtnTap == null
                   ? Theme.of(context).colorScheme.tertiary
-                  : Theme.of(context).colorScheme.onBackground,
+                  : Theme.of(context).colorScheme.surface,
               fontWeight: FontWeight.bold),
         ),
       ),

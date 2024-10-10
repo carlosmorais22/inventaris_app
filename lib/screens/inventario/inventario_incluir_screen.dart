@@ -1,7 +1,6 @@
 import 'dart:convert' as convert;
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:inventaris/entities/bem.dart';
 import 'package:inventaris/entities/inventario.dart';
 import 'package:inventaris/screens/common_widgets/form_step_screen.dart';
@@ -12,6 +11,7 @@ import 'package:inventaris/screens/inventario/components/inventario_incluir_resu
 import 'package:inventaris/screens/inventario/components/inventario_incluir_situacao.dart';
 import 'package:inventaris/shared/globals.dart';
 import 'package:inventaris/utils/app_alert.dart';
+import 'package:inventaris/utils/app_http.dart' as AppHttp;
 import 'package:inventaris/utils/constants.dart';
 
 class InventarioIncluirScreen extends StatefulWidget {
@@ -93,26 +93,14 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
   }
 
   _registrar() {
-    var endPoint = '/api/inventario';
-    var url = Uri.http(kHost, endPoint, {'q': ''});
-
-    print("try url " + kHost + endPoint);
-
-    Inventario inventario = Globals().inventario;
-
-    var body = convert.json.encode(inventario);
-    print(body);
-    var response = http.post(url,
-        headers: {
-          "Content-Type": "application/json",
-          "accept": "application/json"
-        },
-        body: body);
+    var response = AppHttp.post(
+        '/api/inventario',
+        {"Content-Type": "application/json", "accept": "application/json"},
+        convert.json.encode(Globals().inventario));
 
     response.then((resposta) {
       print(resposta.statusCode);
       if (resposta.statusCode == 200) {
-        print(resposta.body);
         widget.callback(widget.bem.id, true);
         AppAlert.info(
             title: kSucesso,

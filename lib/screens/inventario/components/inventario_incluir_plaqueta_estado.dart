@@ -1,13 +1,11 @@
-import 'dart:convert' as convert;
-
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:inventaris/entities/estado.dart';
 import 'package:inventaris/screens/common_widgets/app_text_field.dart';
 import 'package:inventaris/screens/common_widgets/step_title.dart';
 import 'package:inventaris/screens/inventario/components/build_dados_bem.dart';
 import 'package:inventaris/shared/globals.dart';
+import 'package:inventaris/utils/app_http.dart' as AppHttp;
 import 'package:toggle_switch/toggle_switch.dart';
 
 class InventarisIncluirPlaquetaEstado extends StatefulWidget {
@@ -29,7 +27,6 @@ class _InventarisIncluirPlaquetaEstadoState
   List<Estado> _estados = [];
   final TextEditingController _estadoController = TextEditingController();
 
-  String host = "app-inventario.uerr.edu.br";
   int initTemPlaquetaValue = 0;
   String initEstadoNome = '';
 
@@ -61,7 +58,7 @@ class _InventarisIncluirPlaquetaEstadoState
   void initState() {
     super.initState();
     _estadoController.addListener(_estadoControllerEvent);
-    _carregarEstados = _refreshEstados();
+    _carregarEstados = AppHttp.list('/api/estado');
     _estadoController.text = Globals().bem.estado_descricao!;
     Globals().inventario_estado = Globals().bem.estado_descricao!;
   }
@@ -141,20 +138,5 @@ class _InventarisIncluirPlaquetaEstadoState
         ],
       ),
     );
-  }
-
-  // retorna bens para o tipo e texto do filtro
-  Future<List> _refreshEstados() async {
-    var endPoint = '/api/estado';
-    var url = Uri.http(host, endPoint, {'q': ''});
-
-    print("try url " + host + endPoint);
-    var response = await http.get(url);
-    if (response.statusCode == 201) {
-      return convert.jsonDecode(response.body) as List<dynamic>;
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-      return [];
-    }
   }
 }

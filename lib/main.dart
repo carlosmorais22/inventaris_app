@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
             ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent).copyWith(
           inversePrimary: Color.fromRGBO(129, 193, 231, 95),
 
-          onBackground: Colors.white,
           // inverseSurface: Colors.black54,
           // Text input
           onSurface: Colors.black87,
