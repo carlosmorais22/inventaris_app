@@ -8,7 +8,12 @@ const host = "api-inventaris.uerr.edu.br";
 
 // retorna bens para o tipo e texto do filtro
 Future<Map<String, dynamic>> get(String endPoint) async {
+<<<<<<< HEAD
   var url = Uri.https(host, endPoint, {'q': ''});
+=======
+  var url = Uri.http(host, endPoint, {'q': ''});
+  print(url);
+>>>>>>> f2e14dce448faab94f4ce4a501589b6006086cad
 
   var response = await http.get(url);
   if (response.statusCode == 201) {
@@ -21,10 +26,15 @@ Future<Map<String, dynamic>> get(String endPoint) async {
 
 // retorna bens para o tipo e texto do filtro
 Future<List<dynamic>> list(String endPoint) async {
+<<<<<<< HEAD
   var url = Uri.https(host, endPoint, {'q': ''});
+=======
+  var url = Uri.http(host, endPoint, {'q': ''});
+  print(url);
+>>>>>>> f2e14dce448faab94f4ce4a501589b6006086cad
 
   var response = await http.get(url);
-  print(response.statusCode);
+  print(response.body);
   if (response.statusCode == 201) {
     print(response.body);
     return convert.jsonDecode(response.body) as List<dynamic>;

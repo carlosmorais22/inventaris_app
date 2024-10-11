@@ -26,17 +26,13 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
   late Future<List> _carregarSetores;
   List<String> _listaSituacoes = [kSetorOrigem, kOutroSetor];
 
+  List<String> suggestions = [];
+  List<Setor> setores = [];
+
   @override
   void initState() {
     // Globals().inventario.situacao = 1;
     _carregarSetores = _refreshSetores();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    List<String> suggestions = [];
-    List<Setor> setores = [];
 
     _carregarSetores.then((list) {
       for (Map<String, dynamic> map in list) {
@@ -45,8 +41,17 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
         setores.add(setor);
         suggestions.add(setor.sigla);
       }
+      print("###################################");
+      print("###################################");
+      print(suggestions.length);
+      print("###################################");
+      print("###################################");
     });
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     double _sizeWidth = MediaQuery.of(context).size.width;
 
     return SingleChildScrollView(

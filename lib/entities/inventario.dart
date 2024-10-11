@@ -6,7 +6,7 @@ class Inventario {
   late int situacao;
   late bool? plaqueta;
   late String? observacao;
-  late int? cadastrado_por;
+  late String? cadastrado_por;
   late String? situacao_observacao;
   late bool? tem_numero_serie;
   late String? numero_serie;
