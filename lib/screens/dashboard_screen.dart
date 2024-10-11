@@ -29,11 +29,6 @@ class DashoardTab extends StatefulWidget {
 
 class _DashoardTabState extends State<DashoardTab> {
   late Future<List> _carregarBens;
-<<<<<<< HEAD
-=======
-  late bool carregouBens = false;
-  int itensListados = 0;
->>>>>>> f2e14dce448faab94f4ce4a501589b6006086cad
 
   int tamanhoTextoDescricao = 75;
   List<double> larguraColunas = [0.06, 0.26, 0.46, 0.22];
@@ -51,16 +46,13 @@ class _DashoardTabState extends State<DashoardTab> {
 
   List<TableRow> rowTable = [];
 
-  _registrarBemNaoLocalizado(Bem bem) {
+  _registrarBemNaoLocalizado(int idBem) {
     var endPoint = '/api/inventario';
 
-    print(Globals().esteDispositivo.cpf);
     Inventario inventario = Inventario(
         ano: 2024,
-        bem: bem.id,
+        bem: idBem,
         situacao: 3,
-        estado: bem.estado,
-        numero_serie: bem.numero_serie,
         cadastrado_por: Globals().esteDispositivo.cpf,
         situacao_observacao: "");
 
@@ -131,14 +123,14 @@ class _DashoardTabState extends State<DashoardTab> {
             actions: <Widget>[
               Globals().esteDispositivo.is_adm!
                   ? IconButton(
-                      icon: Icon(
-                        Icons.settings_cell,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        _exibirDispositivos();
-                      },
-                    )
+                icon: Icon(
+                  Icons.settings_cell,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  _exibirDispositivos();
+                },
+              )
                   : SizedBox(),
             ],
           ),
@@ -203,25 +195,17 @@ class _DashoardTabState extends State<DashoardTab> {
                       ],
                     ),
                     Container(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Text(
-                          itensListados > 0
-                              ? itensListados.toString() + " itens encontrados"
-                              : "",
-                          style: Theme.of(context).textTheme.titleSmall,
-                        )),
-                    FutureBuilder(
-                      future: _carregarBens,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          List list = snapshot.data;
-                          itensListados = list.length;
-                          print(list.length);
+                      padding: EdgeInsets.only(top: 10),
+                      child: FutureBuilder(
+                        future: _carregarBens,
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            List list = snapshot.data;
 
-                          List<Bem> bens = [];
-                          List<Widget> rows = [];
+                            List<Bem> bens = [];
+                            List<Widget> rows = [];
 
-<<<<<<< HEAD
                             List<dynamic> dados = [
                               "",
                               "Tombo",
@@ -234,7 +218,7 @@ class _DashoardTabState extends State<DashoardTab> {
                               String descricao = bem.descricao;
                               if (descricao.length >= tamanhoTextoDescricao) {
                                 descricao = descricao.substring(
-                                        0, tamanhoTextoDescricao) +
+                                    0, tamanhoTextoDescricao) +
                                     "...";
                                 bem.descricao = descricao;
                               }
@@ -262,7 +246,7 @@ class _DashoardTabState extends State<DashoardTab> {
                                                   AppAlert.confirm(
                                                       title: kAtencao,
                                                       text:
-                                                          kMsgConfirmaBemNaoEncontraro,
+                                                      kMsgConfirmaBemNaoEncontraro,
                                                       context: context,
                                                       onConfirmBtnTap: () {
                                                         _registrarBemNaoLocalizado(
@@ -271,13 +255,13 @@ class _DashoardTabState extends State<DashoardTab> {
                                                   print(bem.id);
                                                 },
                                                 backgroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .inversePrimary,
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .inversePrimary,
                                                 foregroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .onSurface,
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface,
                                                 icon: Icons.fmd_bad,
                                                 label: kBemNaoLozalizado,
                                                 spacing: 5,
@@ -296,10 +280,10 @@ class _DashoardTabState extends State<DashoardTab> {
                                     .textTheme
                                     .labelSmall!
                                     .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        fontWeight: FontWeight.normal),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                    fontWeight: FontWeight.normal),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
@@ -310,87 +294,9 @@ class _DashoardTabState extends State<DashoardTab> {
                                 ));
                           } else {
                             return Center(child: CircularProgressIndicator());
-=======
-                          List<dynamic> dados = [
-                            "",
-                            "Tombo",
-                            "Descrição",
-                            "Setor"
-                          ];
-                          rows.add(_buildRow(dados, 0, true));
-                          for (Map<String, dynamic> item in list) {
-                            Bem bem = Bem.fromMap(item);
-                            String descricao = bem.descricao;
-                            if (descricao.length >= tamanhoTextoDescricao) {
-                              descricao = descricao.substring(
-                                      0, tamanhoTextoDescricao) +
-                                  "...";
-                              bem.descricao = descricao;
-                            }
-                            dados = [
-                              bem.inventariado,
-                              bem.tombo,
-                              bem.descricao,
-                              bem.setor
-                            ];
-                            rows.add(
-                              GestureDetector(
-                                onDoubleTap: () {
-                                  _inventariar(bem);
-                                },
-                                child: Slidable(
-                                    key: const ValueKey(0),
-                                    startActionPane: ActionPane(
-                                        motion: const ScrollMotion(),
-                                        dismissible:
-                                            DismissiblePane(onDismissed: () {}),
-                                        dragDismissible: false,
-                                        children: [
-                                          SlidableAction(
-                                              onPressed: (context) {
-                                                AppAlert.confirm(
-                                                    title: kAtencao,
-                                                    text:
-                                                        kMsgConfirmaBemNaoEncontraro,
-                                                    context: context,
-                                                    onConfirmBtnTap: () {
-                                                      _registrarBemNaoLocalizado(
-                                                          bem);
-                                                    });
-                                                print(bem.id);
-                                              },
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .inversePrimary,
-                                              foregroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface,
-                                              icon: Icons.fmd_bad,
-                                              label: kBemNaoLozalizado,
-                                              spacing: 5,
-                                              padding: EdgeInsets.zero)
-                                        ]),
-                                    // The child of the Slidable is what the user sees when the component is not dragged.
-                                    child: _buildRow(
-                                        dados, list.indexOf(item), false)),
-                              ),
-                            );
-                            bens.add(bem);
->>>>>>> f2e14dce448faab94f4ce4a501589b6006086cad
                           }
-                          return DefaultTextStyle(
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelSmall!
-                                  .copyWith(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontWeight: FontWeight.normal),
-                              child: Column(children: rows));
-                        } else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      },
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -410,8 +316,8 @@ class _DashoardTabState extends State<DashoardTab> {
       color: ehTitulo
           ? Theme.of(context).colorScheme.secondary
           : index.isOdd
-              ? Theme.of(context).colorScheme.surface
-              : Theme.of(context).colorScheme.tertiary,
+          ? Theme.of(context).colorScheme.surface
+          : Theme.of(context).colorScheme.tertiary,
       child: Row(
         children: [
           Container(
@@ -419,18 +325,18 @@ class _DashoardTabState extends State<DashoardTab> {
             child: ehTitulo
                 ? Text("")
                 : lista[0] != null
-                    ? lista[0]! == 3
-                        ? Icon(
-                            Icons.verified,
-                            color: Colors.deepOrange,
-                            size: 18.0,
-                          )
-                        : Icon(
-                            Icons.verified,
-                            color: Colors.green,
-                            size: 18.0,
-                          )
-                    : SizedBox(),
+                ? lista[0]! == 3
+                ? Icon(
+              Icons.verified,
+              color: Colors.deepOrange,
+              size: 18.0,
+            )
+                : Icon(
+              Icons.verified,
+              color: Colors.green,
+              size: 18.0,
+            )
+                : SizedBox(),
           ),
           _buildCell(context, lista[1], ehTitulo, "L", 1),
           Expanded(
