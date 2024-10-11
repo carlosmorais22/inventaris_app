@@ -180,7 +180,7 @@
         <entry key="flutter">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter/lib" />
+              <option value="$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter/lib" />
             </list>
           </value>
         </entry>
@@ -243,7 +243,7 @@
         <entry key="flutter_localizations">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_localizations/lib" />
+              <option value="$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_localizations/lib" />
             </list>
           </value>
         </entry>
@@ -257,14 +257,14 @@
         <entry key="flutter_test">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_test/lib" />
+              <option value="$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_test/lib" />
             </list>
           </value>
         </entry>
         <entry key="flutter_web_plugins">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_web_plugins/lib" />
+              <option value="$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_web_plugins/lib" />
             </list>
           </value>
         </entry>
@@ -460,7 +460,7 @@
         <entry key="sky_engine">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/bin/cache/pkg/sky_engine/lib" />
+              <option value="$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/bin/cache/pkg/sky_engine/lib" />
             </list>
           </value>
         </entry>
@@ -640,11 +640,11 @@
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/win32-5.5.5/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/win32_registry-1.1.5/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/xdg_directories-1.0.4/lib" />
-      <root url="file://$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/bin/cache/pkg/sky_engine/lib" />
-      <root url="file://$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter/lib" />
-      <root url="file://$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_localizations/lib" />
-      <root url="file://$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_test/lib" />
-      <root url="file://$PROJECT_DIR$/../../../programas/flutter_windows_3.24.3-stable/packages/flutter_web_plugins/lib" />
+      <root url="file://$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/bin/cache/pkg/sky_engine/lib" />
+      <root url="file://$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter/lib" />
+      <root url="file://$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_localizations/lib" />
+      <root url="file://$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_test/lib" />
+      <root url="file://$PROJECT_DIR$/../../desenvolvimento/programas/flutter_windows_3.24.3-stable/packages/flutter_web_plugins/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

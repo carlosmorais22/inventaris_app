@@ -30,8 +30,8 @@ class Dispositivo {
 
   factory Dispositivo.fromMap(Map<String, dynamic> map) => Dispositivo(
         id: map["id"],
-        nome: map["nome"],
-        cpf: map["cpf"],
+        nome: map["nome"] ?? "",
+        cpf: map["cpf"] ?? "",
         modelo: map["modelo"],
         fabricante: map["fabricante"],
         status: map["status"],

@@ -22,7 +22,7 @@ class _DispositivoScreenState extends State<DispositivoScreen> {
   late bool carregouDispositivos = false;
 
   int tamanhoTextoDescricao = 75;
-  List<double> larguraColunas = [0.25, 0.36, 0.15, 0.12];
+  List<double> larguraColunas = [0.25, 0.36, 0.2, 0.12];
 
   void _atualizar() {
     setState(() {
@@ -81,7 +81,7 @@ class _DispositivoScreenState extends State<DispositivoScreen> {
                               dispositivo.id,
                               dispositivo.nome,
                               dispositivo.cpf,
-                              status
+                              dispositivo.status
                             ];
                             rows.add(
                               GestureDetector(
@@ -174,7 +174,7 @@ class _DispositivoScreenState extends State<DispositivoScreen> {
           ),
           _buildCell(
               context, lista[2] ?? "", ehTitulo, ehTitulo ? "C" : "L", 2),
-          _buildCell(context, lista[3], ehTitulo, ehTitulo ? "C" : "C", 3),
+          _buildCell(context, lista[3].toString(), ehTitulo, ehTitulo ? "C" : "C", 3)
         ],
       ),
     );
@@ -275,10 +275,11 @@ class _DispositivoScreenState extends State<DispositivoScreen> {
         children: [
           Wrap(
             children: [
-              Text(
-                descricao,
-                style: textStyle,
-              ),
+              descricao == "true" || descricao == "false"
+              ? descricao == "true"
+                  ? Icon(Icons.done_all, color: Colors.green,)
+                  : Icon(Icons.remove_done, color: Colors.red,)
+              : Text(descricao),
             ],
           ),
         ],

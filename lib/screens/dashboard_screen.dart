@@ -29,7 +29,6 @@ class DashoardTab extends StatefulWidget {
 
 class _DashoardTabState extends State<DashoardTab> {
   late Future<List> _carregarBens;
-  late bool carregouBens = false;
 
   int tamanhoTextoDescricao = 75;
   List<double> larguraColunas = [0.06, 0.26, 0.46, 0.22];
@@ -274,7 +273,8 @@ class _DashoardTabState extends State<DashoardTab> {
                                 ),
                               );
                               bens.add(bem);
-                            }
+                            };
+                            int resgistrsEncontaados = list.length;
                             return DefaultTextStyle(
                                 style: Theme.of(context)
                                     .textTheme
@@ -284,7 +284,14 @@ class _DashoardTabState extends State<DashoardTab> {
                                             .colorScheme
                                             .primary,
                                         fontWeight: FontWeight.normal),
-                                child: Column(children: rows));
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(resgistrsEncontaados > 0 ? resgistrsEncontaados.toString() + " registro(s) encontrado(s)" : "", style: Theme.of(context).textTheme.titleSmall,),
+                                    Column(children: rows),
+                                  ],
+                                ));
                           } else {
                             return Center(child: CircularProgressIndicator());
                           }

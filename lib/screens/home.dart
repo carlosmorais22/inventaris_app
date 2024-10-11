@@ -171,9 +171,11 @@ class _DeviceInfoState extends State<DeviceInfo> {
         idDispositivo = deviceData['id'];
         modeloDispositivo = deviceData['model'];
         fabricanteDispositivo = deviceData['manufacturer'];
-        Future<Map<String, dynamic>> resultado = _refreshUsuario(idDispositivo);
+        Future<Map<String, dynamic>> resultado = _refreshDspositivo(idDispositivo);
         resultado.then((resposta) {
           setState(() {
+            print("AQUI");
+            finalizou_teste = true;
             if (resposta.length <= 0) {
               // NAO LOCALIZADO
               Dispositivo novoDispositivo = Dispositivo(
@@ -182,31 +184,22 @@ class _DeviceInfoState extends State<DeviceInfo> {
                   fabricante: fabricanteDispositivo,
                   status: false,
                   is_adm: false);
-              var response = AppHttp.post(
-                  '/api/dispositivo',
-                  {
-                    "Content-Type": "application/json",
-                    "accept": "application/json"
-                  },
-                  convert.json.encode(novoDispositivo));
-              print(response);
+              Globals().esteDispositivo = novoDispositivo;
             }
-            Globals().esteDispositivo = Dispositivo.fromMap(resposta);
-            print("#############################################");
-            print("#############################################");
-            print(Globals().esteDispositivo.toJson());
-            print("#############################################");
-            print("#############################################");
+            else {
+              Globals().esteDispositivo = Dispositivo.fromMap(resposta);
+            }
             habilitado = resposta.length > 0 &&
                 resposta['status'] &&
                 resposta['cpf'] != null &&
                 resposta['cpf'] != "" &&
                 resposta['nome'] != null &&
                 resposta['nome'] != "";
-            finalizou_teste = true;
           });
         }).catchError((onError) {
+          print("------------------- ERROR -------------------");
           print(onError);
+          print("---------------------------------------------");
         });
       });
     });
@@ -275,7 +268,7 @@ class _DeviceInfoState extends State<DeviceInfo> {
         };
 
   // retorna bens para o tipo e texto do filtro
-  Future<Map<String, dynamic>> _refreshUsuario(String idDispositivo) async {
+  Future<Map<String, dynamic>> _refreshDspositivo(String idDispositivo) async {
     var endPoint = '/api/dispositivo/' + idDispositivo;
     return AppHttp.get(endPoint);
   }
