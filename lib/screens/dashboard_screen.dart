@@ -30,6 +30,7 @@ class DashoardTab extends StatefulWidget {
 class _DashoardTabState extends State<DashoardTab> {
   late Future<List> _carregarBens;
   late bool carregouBens = false;
+  int itensListados = 0;
 
   int tamanhoTextoDescricao = 75;
   List<double> larguraColunas = [0.06, 0.26, 0.46, 0.22];
@@ -47,14 +48,17 @@ class _DashoardTabState extends State<DashoardTab> {
 
   List<TableRow> rowTable = [];
 
-  _registrarBemNaoLocalizado(int idBem) {
+  _registrarBemNaoLocalizado(Bem bem) {
     var endPoint = '/api/inventario';
 
+    print(Globals().esteDispositivo.cpf);
     Inventario inventario = Inventario(
         ano: 2024,
-        bem: idBem,
+        bem: bem.id,
         situacao: 3,
-        cadastrado_por: 1,
+        estado: bem.estado,
+        numero_serie: bem.numero_serie,
+        cadastrado_por: Globals().esteDispositivo.cpf,
         situacao_observacao: "");
 
     var body = convert.json.encode(inventario);
@@ -196,100 +200,103 @@ class _DashoardTabState extends State<DashoardTab> {
                       ],
                     ),
                     Container(
-                      padding: EdgeInsets.only(top: 10),
-                      child: FutureBuilder(
-                        future: _carregarBens,
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            List list = snapshot.data;
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text(
+                          itensListados > 0
+                              ? itensListados.toString() + " itens encontrados"
+                              : "",
+                          style: Theme.of(context).textTheme.titleSmall,
+                        )),
+                    FutureBuilder(
+                      future: _carregarBens,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          List list = snapshot.data;
+                          itensListados = list.length;
+                          print(list.length);
 
-                            List<Bem> bens = [];
-                            List<Widget> rows = [];
+                          List<Bem> bens = [];
+                          List<Widget> rows = [];
 
-                            List<dynamic> dados = [
-                              "",
-                              "Tombo",
-                              "Descrição",
-                              "Setor"
-                            ];
-                            rows.add(_buildRow(dados, 0, true));
-                            for (Map<String, dynamic> item in list) {
-                              Bem bem = Bem.fromMap(item);
-                              String descricao = bem.descricao;
-                              if (descricao.length >= tamanhoTextoDescricao) {
-                                descricao = descricao.substring(
-                                        0, tamanhoTextoDescricao) +
-                                    "...";
-                                bem.descricao = descricao;
-                              }
-                              dados = [
-                                bem.inventariado,
-                                bem.tombo,
-                                bem.descricao,
-                                bem.setor
-                              ];
-                              rows.add(
-                                GestureDetector(
-                                  onDoubleTap: () {
-                                    _inventariar(bem);
-                                  },
-                                  child: Slidable(
-                                      key: const ValueKey(0),
-                                      startActionPane: ActionPane(
-                                          motion: const ScrollMotion(),
-                                          dismissible: DismissiblePane(
-                                              onDismissed: () {}),
-                                          dragDismissible: false,
-                                          children: [
-                                            SlidableAction(
-                                                onPressed: (context) {
-                                                  AppAlert.confirm(
-                                                      title: kAtencao,
-                                                      text:
-                                                          kMsgConfirmaBemNaoEncontraro,
-                                                      context: context,
-                                                      onConfirmBtnTap: () {
-                                                        _registrarBemNaoLocalizado(
-                                                            bem.id);
-                                                      });
-                                                  print(bem.id);
-                                                },
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .inversePrimary,
-                                                foregroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .onSurface,
-                                                icon: Icons.fmd_bad,
-                                                label: kBemNaoLozalizado,
-                                                spacing: 5,
-                                                padding: EdgeInsets.zero)
-                                          ]),
-                                      // The child of the Slidable is what the user sees when the component is not dragged.
-                                      child: _buildRow(
-                                          dados, list.indexOf(item), false)),
-                                ),
-                              );
-                              bens.add(bem);
+                          List<dynamic> dados = [
+                            "",
+                            "Tombo",
+                            "Descrição",
+                            "Setor"
+                          ];
+                          rows.add(_buildRow(dados, 0, true));
+                          for (Map<String, dynamic> item in list) {
+                            Bem bem = Bem.fromMap(item);
+                            String descricao = bem.descricao;
+                            if (descricao.length >= tamanhoTextoDescricao) {
+                              descricao = descricao.substring(
+                                      0, tamanhoTextoDescricao) +
+                                  "...";
+                              bem.descricao = descricao;
                             }
-                            return DefaultTextStyle(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelSmall!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        fontWeight: FontWeight.normal),
-                                child: Column(children: rows));
-                          } else {
-                            return Center(child: CircularProgressIndicator());
+                            dados = [
+                              bem.inventariado,
+                              bem.tombo,
+                              bem.descricao,
+                              bem.setor
+                            ];
+                            rows.add(
+                              GestureDetector(
+                                onDoubleTap: () {
+                                  _inventariar(bem);
+                                },
+                                child: Slidable(
+                                    key: const ValueKey(0),
+                                    startActionPane: ActionPane(
+                                        motion: const ScrollMotion(),
+                                        dismissible:
+                                            DismissiblePane(onDismissed: () {}),
+                                        dragDismissible: false,
+                                        children: [
+                                          SlidableAction(
+                                              onPressed: (context) {
+                                                AppAlert.confirm(
+                                                    title: kAtencao,
+                                                    text:
+                                                        kMsgConfirmaBemNaoEncontraro,
+                                                    context: context,
+                                                    onConfirmBtnTap: () {
+                                                      _registrarBemNaoLocalizado(
+                                                          bem);
+                                                    });
+                                                print(bem.id);
+                                              },
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .inversePrimary,
+                                              foregroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface,
+                                              icon: Icons.fmd_bad,
+                                              label: kBemNaoLozalizado,
+                                              spacing: 5,
+                                              padding: EdgeInsets.zero)
+                                        ]),
+                                    // The child of the Slidable is what the user sees when the component is not dragged.
+                                    child: _buildRow(
+                                        dados, list.indexOf(item), false)),
+                              ),
+                            );
+                            bens.add(bem);
                           }
-                        },
-                      ),
+                          return DefaultTextStyle(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall!
+                                  .copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.normal),
+                              child: Column(children: rows));
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                      },
                     ),
                   ],
                 ),
