@@ -10,6 +10,7 @@ class Inventario {
   late String? situacao_observacao;
   late bool? tem_numero_serie;
   late String? numero_serie;
+  late String dispositivo;
   late DateTime? created_at;
   late DateTime? updated_at;
   late DateTime? deleted_at;
@@ -26,6 +27,7 @@ class Inventario {
       this.situacao_observacao,
       this.tem_numero_serie,
       this.numero_serie,
+      required this.dispositivo,
       this.created_at,
       this.updated_at,
       this.deleted_at});
@@ -43,6 +45,7 @@ class Inventario {
     data['situacao_observacao'] = this.situacao_observacao;
     data['tem_numero_serie'] = this.tem_numero_serie;
     data['numero_serie'] = this.numero_serie;
+    data['dispositivo'] = this.dispositivo;
     data['created_at'] = this.created_at;
     data['updated_at'] = this.updated_at;
     data['deleted_at'] = this.deleted_at;
@@ -61,6 +64,7 @@ class Inventario {
         situacao_observacao: map["situacao_observacao"],
         tem_numero_serie: map["tem_numero_serie"],
         numero_serie: map["numero_serie"],
+        dispositivo: map["dispositivo"],
         created_at: map["created_at"],
         updated_at: map["updated_at"],
         deleted_at: map["deleted_at"],

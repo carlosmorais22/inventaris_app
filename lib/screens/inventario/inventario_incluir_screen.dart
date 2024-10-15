@@ -37,6 +37,7 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
         tem_numero_serie: false,
         plaqueta: false,
         numero_serie: "",
+        dispositivo: Globals().esteDispositivo.id,
         cadastrado_por: Globals().esteDispositivo.cpf);
     Globals().inventario_situacao = kSim;
     Globals().bem = widget.bem;

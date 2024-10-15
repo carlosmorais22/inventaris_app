@@ -55,6 +55,7 @@ class _DashoardTabState extends State<DashoardTab> {
         bem: idBem,
         situacao: 3,
         cadastrado_por: Globals().esteDispositivo.cpf,
+        dispositivo: Globals().esteDispositivo.id,
         situacao_observacao: "");
 
     var response = AppHttp.post(endPoint, inventario);
