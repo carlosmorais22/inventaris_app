@@ -9,10 +9,13 @@ import 'package:inventaris/utils/constants.dart';
 
 enum SingingCharacter { setor, tombo, descricao }
 
+
 class DesabilitadoTab extends StatefulWidget {
   final Map<String, dynamic> dadosDispositivo;
+  final String titulo;
+  final String mensagem;
 
-  const DesabilitadoTab({super.key, required this.dadosDispositivo});
+  const DesabilitadoTab({super.key, required this.dadosDispositivo, required this.titulo, required this.mensagem});
 
   @override
   State<DesabilitadoTab> createState() => _DesabilitadoTabState();
@@ -50,9 +53,9 @@ class _DesabilitadoTabState extends State<DesabilitadoTab> {
           child: Column(
             children: [
               StepTitle(
-                title: "Seu celular não esta habilitado.",
+                title: widget.titulo,
                 subTitle:
-                    "Favor entrar em contato com o administrador e informe os dados abaixo.",
+                    widget.mensagem,
               ),
               SizedBox(
                 height: 20,

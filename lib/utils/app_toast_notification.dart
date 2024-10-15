@@ -32,7 +32,7 @@ class AppToastNotification {
       context: context, // optional if you use ToastificationWrapper
       type: ToastificationType.error,
       style: ToastificationStyle.flatColored,
-      autoCloseDuration: const Duration(seconds: 4),
+      autoCloseDuration: const Duration(seconds: 5),
       title: Text(title != null ? title! : kSucesso),
       description: Text(text),
       icon: const Icon(Icons.error),

@@ -336,17 +336,23 @@ class _DashoardTabState extends State<DashoardTab> {
             child: ehTitulo
                 ? Text("")
                 : lista[0] != null
-                    ? lista[0]! == 3
+                    ? lista[0]! == 1
                         ? Icon(
-                            Icons.verified,
-                            color: Colors.deepOrange,
-                            size: 18.0,
-                          )
-                        : Icon(
                             Icons.verified,
                             color: Colors.green,
                             size: 18.0,
                           )
+                        : lista[0]! == 2
+                        ? Icon(
+                            Icons.verified_outlined,
+                            color: Colors.green,
+                            size: 18.0,
+                          )
+                        : Icon(
+                              Icons.verified_,
+                              color: Colors.red,
+                              size: 18.0,
+                            )
                     : SizedBox(),
           ),
           _buildCell(context, lista[1], ehTitulo, "L", 1),

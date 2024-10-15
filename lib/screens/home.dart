@@ -28,6 +28,8 @@ class _DeviceInfoState extends State<DeviceInfo> {
   String idDispositivo = "";
   String modeloDispositivo = "";
   String fabricanteDispositivo = "";
+  String titulo = "";
+  String mensagem = "";
 
   Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
     return <String, dynamic>{
@@ -165,6 +167,7 @@ class _DeviceInfoState extends State<DeviceInfo> {
 
   @override
   void initState() {
+
     Future<Map<String, dynamic>> responseDeviceData = initPlatformState();
     responseDeviceData.then((deviceData) {
       _deviceData = deviceData;
@@ -183,6 +186,20 @@ class _DeviceInfoState extends State<DeviceInfo> {
                 resposta['cpf'] != "" &&
                 resposta['nome'] != null &&
                 resposta['nome'] != "";
+            if (!habilitado){
+              print(resposta['status']);
+              if (resposta['cpf'] != null &&
+                  resposta['cpf'] != "" &&
+                  resposta['nome'] != null &&
+                  resposta['nome'] != ""){
+                titulo = "Seu celular não esta autorizado.";
+                mensagem = "Favor entrar em contato com o administrador e informe os dados abaixo.";
+              }
+              else {
+                titulo = "Seu celular não esta habilitado.";
+                mensagem = "Favor entrar em contato com o administrador e informe os dados abaixo.";
+              }
+            }
             Globals().esteDispositivo = Dispositivo.fromMap(resposta);
             finalizou_teste = true;
           });
@@ -201,31 +218,45 @@ class _DeviceInfoState extends State<DeviceInfo> {
           var responseAddDevice = AppHttp.post(endPoint, novoDispositivo);
 
           responseAddDevice.then((response) {
-            print(response.statusCode);
-            if (response.statusCode == 200) {
-              print(response.body);
-              // AppToastNotification.success(
-              //     text: "Dispositivo gravado com sucesso", context: context);
-            } else {
-              if (response.statusCode == 404) {
-                AppToastNotification.error(
-                    text: "Houve um erro. Contate o administrador.",
-                    context: context);
-              } else {
-                AppToastNotification.error(
-                    text: "Houve um erro. Contate o administrador.",
-                    context: context);
-                print('Request failed with status: ${response.statusCode}.');
-                throw Exception('Erro ao tentar acessar servidor externo');
-              }
-            }
             setState(() {
+              if (response.statusCode == 200) {
+                print(response.body);
+                titulo = "Seu celular não esta habilitado.";
+                mensagem = "Favor entrar em contato com o administrador e informe os dados abaixo.";
+                // AppToastNotification.success(
+                //     text: "Dispositivo gravado com sucesso", context: context);
+              } else {
+                if (response.statusCode == 404) {
+                  titulo = "Houve um erro (404).";
+                  mensagem = "Favor entrar em contato com o administrador e informe os dados abaixo.";
+                  // AppToastNotification.error(
+                  //     text: "Houve um erro (404). Contate o administrador.",
+                  //     context: context);
+                } else {
+                  titulo = 'Request failed with status: ${response.statusCode}.';
+                  mensagem = "Favor entrar em contato com o administrador e informe os dados abaixo.";
+                  // AppToastNotification.error(
+                  //     text: 'Request failed with status: ${response.statusCode}.',
+                  //     context: context);
+                  print('Request failed with status: ${response.statusCode}.');
+                  throw Exception('Erro ao tentar acessar servidor externo');
+                }
+              }
               habilitado = false;
               finalizou_teste = true;
             });
           });
         }
       }).catchError((onError) {
+        setState(() {
+          habilitado = false;
+          finalizou_teste = true;
+          titulo = 'Problemas de acesso ao servidor da aplicação.';
+          mensagem = "Favor verificar sua conexão com a internet.";
+        });
+        // AppToastNotification.error(
+        //     text: mensagem,
+        //     context: context);
         print("------------------- ERROR -------------------");
         print(onError);
         print("---------------------------------------------");
@@ -251,7 +282,7 @@ class _DeviceInfoState extends State<DeviceInfo> {
         : habilitado
             ? DashoardTab()
             : DesabilitadoTab(
-                dadosDispositivo: _deviceData,
+                dadosDispositivo: _deviceData, titulo: titulo, mensagem: mensagem,
               );
   }
 
