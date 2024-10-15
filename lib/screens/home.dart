@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert' as convert;
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -10,7 +9,9 @@ import 'package:inventaris/screens/dashboard_screen.dart';
 import 'package:inventaris/screens/desabilitado_screen.dart';
 import 'package:inventaris/shared/globals.dart';
 import 'package:inventaris/utils//app_http.dart' as AppHttp;
+import 'package:inventaris/utils/app_toast_notification.dart';
 import 'package:inventaris/utils/constants.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class DeviceInfo extends StatefulWidget {
   const DeviceInfo({super.key});
@@ -164,43 +165,70 @@ class _DeviceInfoState extends State<DeviceInfo> {
 
   @override
   void initState() {
-    Future<Map<String, dynamic>> _resposta = initPlatformState();
-    _resposta.then((deviceData) {
-      setState(() {
-        _deviceData = deviceData;
-        idDispositivo = deviceData['id'];
-        modeloDispositivo = deviceData['model'];
-        fabricanteDispositivo = deviceData['manufacturer'];
-        Future<Map<String, dynamic>> resultado = _refreshDspositivo(idDispositivo);
-        resultado.then((resposta) {
+    Future<Map<String, dynamic>> responseDeviceData = initPlatformState();
+    responseDeviceData.then((deviceData) {
+      _deviceData = deviceData;
+      idDispositivo = deviceData['id'];
+      modeloDispositivo = deviceData['model'];
+      fabricanteDispositivo = deviceData['manufacturer'];
+      Future<Map<String, dynamic>> resultado =
+          _refreshDspositivo(idDispositivo);
+      resultado.then((resposta) {
+        // Dispositivo localizado
+        if (resposta.length > 0) {
           setState(() {
-            print("AQUI");
-            finalizou_teste = true;
-            if (resposta.length <= 0) {
-              // NAO LOCALIZADO
-              Dispositivo novoDispositivo = Dispositivo(
-                  id: idDispositivo,
-                  modelo: modeloDispositivo,
-                  fabricante: fabricanteDispositivo,
-                  status: false,
-                  is_adm: false);
-              Globals().esteDispositivo = novoDispositivo;
-            }
-            else {
-              Globals().esteDispositivo = Dispositivo.fromMap(resposta);
-            }
             habilitado = resposta.length > 0 &&
                 resposta['status'] &&
                 resposta['cpf'] != null &&
                 resposta['cpf'] != "" &&
                 resposta['nome'] != null &&
                 resposta['nome'] != "";
+            Globals().esteDispositivo = Dispositivo.fromMap(resposta);
+            finalizou_teste = true;
           });
-        }).catchError((onError) {
-          print("------------------- ERROR -------------------");
-          print(onError);
-          print("---------------------------------------------");
-        });
+        }
+        // Dispositivo não localizado
+        else {
+          Dispositivo novoDispositivo = Dispositivo(
+              id: idDispositivo,
+              modelo: modeloDispositivo,
+              fabricante: fabricanteDispositivo,
+              status: false,
+              is_adm: false);
+          Globals().esteDispositivo = novoDispositivo;
+
+          var endPoint = '/api/dispositivo';
+          var responseAddDevice = AppHttp.post(endPoint, novoDispositivo);
+
+          responseAddDevice.then((response) {
+            print(response.statusCode);
+            if (response.statusCode == 200) {
+              print(response.body);
+              // AppToastNotification.success(
+              //     text: "Dispositivo gravado com sucesso", context: context);
+            } else {
+              if (response.statusCode == 404) {
+                AppToastNotification.error(
+                    text: "Houve um erro. Contate o administrador.",
+                    context: context);
+              } else {
+                AppToastNotification.error(
+                    text: "Houve um erro. Contate o administrador.",
+                    context: context);
+                print('Request failed with status: ${response.statusCode}.');
+                throw Exception('Erro ao tentar acessar servidor externo');
+              }
+            }
+            setState(() {
+              habilitado = false;
+              finalizou_teste = true;
+            });
+          });
+        }
+      }).catchError((onError) {
+        print("------------------- ERROR -------------------");
+        print(onError);
+        print("---------------------------------------------");
       });
     });
     super.initState();
@@ -214,7 +242,12 @@ class _DeviceInfoState extends State<DeviceInfo> {
               title: Text(kTitulo),
             ),
             // drawer: MyDrawer(),
-            body: Center(child: CircularProgressIndicator()))
+            body: Center(
+              child: LoadingAnimationWidget.inkDrop(
+                color: Theme.of(context).colorScheme.inversePrimary,
+                size: 200,
+              ),
+            ))
         : habilitado
             ? DashoardTab()
             : DesabilitadoTab(

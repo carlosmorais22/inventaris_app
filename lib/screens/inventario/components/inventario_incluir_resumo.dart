@@ -72,22 +72,22 @@ class _InventarisIncluirResumoState extends State<InventarisIncluirResumo> {
                           label: kSituacaoDescricao,
                           conteudo: inventario.situacao_observacao!)
                       : SizedBox(),
-                  _buildPadding(
-                      context: context,
-                      label: kTemNumeroSerie,
-                      conteudo: inventario.tem_numero_serie != null &&
-                              Globals().inventario_tem_numero_serie != null
-                          ? Globals().inventario_tem_numero_serie
-                          : kNaoInformado,
-                      backgroundColor:
-                          Theme.of(context).colorScheme.inversePrimary),
-                  _buildPadding(
-                      context: context,
-                      label: kNumeroSerie,
-                      conteudo: inventario.tem_numero_serie != null &&
-                              inventario.numero_serie != null
-                          ? inventario.numero_serie!
-                          : "- - -"),
+                  // _buildPadding(
+                  //     context: context,
+                  //     label: kTemNumeroSerie,
+                  //     conteudo: inventario.tem_numero_serie != null &&
+                  //             Globals().inventario_tem_numero_serie != null
+                  //         ? Globals().inventario_tem_numero_serie
+                  //         : kNaoInformado,
+                  //     backgroundColor:
+                  //         Theme.of(context).colorScheme.inversePrimary),
+                  // _buildPadding(
+                  //     context: context,
+                  //     label: kNumeroSerie,
+                  //     conteudo: inventario.tem_numero_serie != null &&
+                  //             inventario.numero_serie != null
+                  //         ? inventario.numero_serie!
+                  //         : "- - -"),
                   _buildPadding(
                       context: context,
                       label: kPlaqueta,

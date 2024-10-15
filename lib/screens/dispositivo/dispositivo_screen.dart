@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert' as convert;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -174,7 +173,8 @@ class _DispositivoScreenState extends State<DispositivoScreen> {
           ),
           _buildCell(
               context, lista[2] ?? "", ehTitulo, ehTitulo ? "C" : "L", 2),
-          _buildCell(context, lista[3].toString(), ehTitulo, ehTitulo ? "C" : "C", 3)
+          _buildCell(
+              context, lista[3].toString(), ehTitulo, ehTitulo ? "C" : "C", 3)
         ],
       ),
     );
@@ -203,10 +203,7 @@ class _DispositivoScreenState extends State<DispositivoScreen> {
   }
 
   _atualizarStatus(Dispositivo dispositivo) {
-    var response = AppHttp.put(
-        '/api/dispositivo',
-        {"Content-Type": "application/json", "accept": "application/json"},
-        convert.json.encode(dispositivo));
+    var response = AppHttp.put('/api/dispositivo', dispositivo);
 
     response.then((resposta) {
       print(resposta.statusCode);
@@ -276,10 +273,16 @@ class _DispositivoScreenState extends State<DispositivoScreen> {
           Wrap(
             children: [
               descricao == "true" || descricao == "false"
-              ? descricao == "true"
-                  ? Icon(Icons.done_all, color: Colors.green,)
-                  : Icon(Icons.remove_done, color: Colors.red,)
-              : Text(descricao),
+                  ? descricao == "true"
+                      ? Icon(
+                          Icons.done_all,
+                          color: Colors.green,
+                        )
+                      : Icon(
+                          Icons.remove_done,
+                          color: Colors.red,
+                        )
+                  : Text(descricao),
             ],
           ),
         ],

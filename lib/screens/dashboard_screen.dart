@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert' as convert;
 import 'dart:io';
 
 import 'package:back_pressed/back_pressed.dart';
@@ -16,7 +15,9 @@ import 'package:inventaris/screens/inventario/inventario_incluir_screen.dart';
 import 'package:inventaris/shared/globals.dart';
 import 'package:inventaris/utils/app_alert.dart';
 import 'package:inventaris/utils/app_http.dart' as AppHttp;
+import 'package:inventaris/utils/app_toast_notification.dart';
 import 'package:inventaris/utils/constants.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 enum SingingCharacter { setor, tombo, descricao }
 
@@ -46,7 +47,7 @@ class _DashoardTabState extends State<DashoardTab> {
 
   List<TableRow> rowTable = [];
 
-  _registrarBemNaoLocalizado(int idBem) {
+  _registrarBemNaoLocalizado(BuildContext context, int idBem) {
     var endPoint = '/api/inventario';
 
     Inventario inventario = Inventario(
@@ -56,23 +57,14 @@ class _DashoardTabState extends State<DashoardTab> {
         cadastrado_por: Globals().esteDispositivo.cpf,
         situacao_observacao: "");
 
-    var body = convert.json.encode(inventario);
-    print(body);
-
-    Map<String, String> headers = {
-      "Content-Type": "application/json",
-      "accept": "application/json"
-    };
-    var response = AppHttp.post(endPoint, headers, body);
+    var response = AppHttp.post(endPoint, inventario);
 
     response.then((resposta) {
       print(resposta.statusCode);
       if (resposta.statusCode == 200) {
         print(resposta.body);
-        AppAlert.info(
-            title: kSucesso,
-            text: kMsgInventarioNaoLocalizadoOk,
-            context: context);
+        AppToastNotification.success(
+            text: kMsgInventarioNaoLocalizadoOk, context: context);
         setState(() {
           _carregarBens = _refreshBens();
         });
@@ -101,6 +93,8 @@ class _DashoardTabState extends State<DashoardTab> {
 
   @override
   Widget build(BuildContext context) {
+    bool _isLoaderVisible = false;
+
     return OnBackPressed(
       perform: () {
         AppAlert.confirm(
@@ -123,14 +117,14 @@ class _DashoardTabState extends State<DashoardTab> {
             actions: <Widget>[
               Globals().esteDispositivo.is_adm!
                   ? IconButton(
-                icon: Icon(
-                  Icons.settings_cell,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  _exibirDispositivos();
-                },
-              )
+                      icon: Icon(
+                        Icons.settings_cell,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        _exibirDispositivos();
+                      },
+                    )
                   : SizedBox(),
             ],
           ),
@@ -191,7 +185,7 @@ class _DashoardTabState extends State<DashoardTab> {
                           width: 10,
                         ),
                         CustonElevatedButton(
-                            text: 'enviar', onClickBtnTap: _atualizarPagina)
+                            text: 'pesquisar', onClickBtnTap: _atualizarPagina)
                       ],
                     ),
                     Container(
@@ -218,7 +212,7 @@ class _DashoardTabState extends State<DashoardTab> {
                               String descricao = bem.descricao;
                               if (descricao.length >= tamanhoTextoDescricao) {
                                 descricao = descricao.substring(
-                                    0, tamanhoTextoDescricao) +
+                                        0, tamanhoTextoDescricao) +
                                     "...";
                                 bem.descricao = descricao;
                               }
@@ -246,22 +240,22 @@ class _DashoardTabState extends State<DashoardTab> {
                                                   AppAlert.confirm(
                                                       title: kAtencao,
                                                       text:
-                                                      kMsgConfirmaBemNaoEncontraro,
+                                                          kMsgConfirmaBemNaoEncontraro,
                                                       context: context,
                                                       onConfirmBtnTap: () {
                                                         _registrarBemNaoLocalizado(
-                                                            bem.id);
+                                                            context, bem.id);
                                                       });
                                                   print(bem.id);
                                                 },
                                                 backgroundColor:
-                                                Theme.of(context)
-                                                    .colorScheme
-                                                    .inversePrimary,
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .inversePrimary,
                                                 foregroundColor:
-                                                Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurface,
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurface,
                                                 icon: Icons.fmd_bad,
                                                 label: kBemNaoLozalizado,
                                                 spacing: 5,
@@ -273,27 +267,43 @@ class _DashoardTabState extends State<DashoardTab> {
                                 ),
                               );
                               bens.add(bem);
-                            };
+                            }
+                            ;
                             int resgistrsEncontaados = list.length;
                             return DefaultTextStyle(
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelSmall!
                                     .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary,
-                                    fontWeight: FontWeight.normal),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontWeight: FontWeight.normal),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(resgistrsEncontaados > 0 ? resgistrsEncontaados.toString() + " registro(s) encontrado(s)" : "", style: Theme.of(context).textTheme.titleSmall,),
+                                    Text(
+                                      resgistrsEncontaados > 0
+                                          ? resgistrsEncontaados.toString() +
+                                              " registro(s) encontrado(s)"
+                                          : "",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall,
+                                    ),
                                     Column(children: rows),
                                   ],
                                 ));
                           } else {
-                            return Center(child: CircularProgressIndicator());
+                            return Center(
+                              child: LoadingAnimationWidget.inkDrop(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary,
+                                size: 200,
+                              ),
+                            );
                           }
                         },
                       ),
@@ -316,8 +326,8 @@ class _DashoardTabState extends State<DashoardTab> {
       color: ehTitulo
           ? Theme.of(context).colorScheme.secondary
           : index.isOdd
-          ? Theme.of(context).colorScheme.surface
-          : Theme.of(context).colorScheme.tertiary,
+              ? Theme.of(context).colorScheme.surface
+              : Theme.of(context).colorScheme.tertiary,
       child: Row(
         children: [
           Container(
@@ -325,18 +335,18 @@ class _DashoardTabState extends State<DashoardTab> {
             child: ehTitulo
                 ? Text("")
                 : lista[0] != null
-                ? lista[0]! == 3
-                ? Icon(
-              Icons.verified,
-              color: Colors.deepOrange,
-              size: 18.0,
-            )
-                : Icon(
-              Icons.verified,
-              color: Colors.green,
-              size: 18.0,
-            )
-                : SizedBox(),
+                    ? lista[0]! == 3
+                        ? Icon(
+                            Icons.verified,
+                            color: Colors.deepOrange,
+                            size: 18.0,
+                          )
+                        : Icon(
+                            Icons.verified,
+                            color: Colors.green,
+                            size: 18.0,
+                          )
+                    : SizedBox(),
           ),
           _buildCell(context, lista[1], ehTitulo, "L", 1),
           Expanded(
@@ -436,5 +446,18 @@ class _DashoardTabState extends State<DashoardTab> {
         endPoint = '/api/bem/setor/' + _controller.text;
     }
     return AppHttp.list(endPoint);
+  }
+}
+
+// This function is used to display a snackbar at the bottom of the current screen.
+// It is called by the following code: context.showMessageSnackBar("Hello World");
+extension BuildContextX on BuildContext {
+  void showMessageSnackBar(String message) {
+    ScaffoldMessenger.of(this).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(milliseconds: 500),
+      ),
+    );
   }
 }

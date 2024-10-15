@@ -1,17 +1,14 @@
-import 'dart:convert' as convert;
-
 import 'package:flutter/material.dart';
 import 'package:inventaris/entities/bem.dart';
 import 'package:inventaris/entities/inventario.dart';
 import 'package:inventaris/screens/common_widgets/form_step_screen.dart';
-import 'package:inventaris/screens/inventario/components/inventario_incluir_numero_serie.dart';
 import 'package:inventaris/screens/inventario/components/inventario_incluir_observacao.dart';
 import 'package:inventaris/screens/inventario/components/inventario_incluir_plaqueta_estado.dart';
 import 'package:inventaris/screens/inventario/components/inventario_incluir_resumo.dart';
 import 'package:inventaris/screens/inventario/components/inventario_incluir_situacao.dart';
 import 'package:inventaris/shared/globals.dart';
-import 'package:inventaris/utils/app_alert.dart';
 import 'package:inventaris/utils/app_http.dart' as AppHttp;
+import 'package:inventaris/utils/app_toast_notification.dart';
 import 'package:inventaris/utils/constants.dart';
 
 class InventarioIncluirScreen extends StatefulWidget {
@@ -26,7 +23,7 @@ class InventarioIncluirScreen extends StatefulWidget {
 }
 
 class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
-  List<bool> listStatus = [true, false, false, true, false];
+  List<bool> listStatus = [true, false, true, false];
   int numberSteps = 5;
 
   @override
@@ -56,7 +53,7 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
       openScreen: _openScreen,
       listStatus: listStatus,
       callbackRegister: _registrar,
-      numberSteps: 5,
+      numberSteps: 4,
       stepControlView: true,
       activeStep: activeStep,
     );
@@ -70,45 +67,37 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
       listStatus[0] =
           situacao != null && (situacao == 1 || situacao_observacao != "");
 
-      // ###################################################
-      bool? tem_numero_serie = inventario.tem_numero_serie;
-      String? numero_serie = inventario.numero_serie;
-      listStatus[1] = tem_numero_serie != null &&
-          numero_serie != null &&
-          (tem_numero_serie == false || numero_serie != "");
-
+      // // ###################################################
+      // bool? tem_numero_serie = inventario.tem_numero_serie;
+      // String? numero_serie = inventario.numero_serie;
+      // listStatus[1] = tem_numero_serie != null &&
+      //     numero_serie != null &&
+      //     (tem_numero_serie == false || numero_serie != "");
+      //
       // ###################################################
       bool? tem_plaqueta = inventario.plaqueta;
       int? estadoBem = inventario.estado;
-      listStatus[2] =
+      listStatus[1] =
           tem_plaqueta != null && estadoBem != null; // && estadoBem != "";
 
       // ###################################################
-      listStatus[3] = true;
+      listStatus[2] = true;
 
       // ###################################################
-      listStatus[4] =
+      listStatus[3] =
           listStatus[0] && listStatus[1] && listStatus[2] && listStatus[3];
     });
   }
 
   _registrar() {
-    var response = AppHttp.post(
-        '/api/inventario',
-        {"Content-Type": "application/json", "accept": "application/json"},
-        convert.json.encode(Globals().inventario));
+    var response = AppHttp.post('/api/inventario', Globals().inventario);
 
     response.then((resposta) {
       print(resposta.statusCode);
       if (resposta.statusCode == 200) {
         widget.callback(widget.bem.id, true);
-        AppAlert.info(
-            title: kSucesso,
-            text: kMsgInventarioOk,
-            context: context,
-            onConfirmBtnTap: () async {
-              Navigator.pop(context);
-            });
+        AppToastNotification.success(text: kMsgInventarioOk, context: context);
+        Navigator.pop(context);
       } else {
         if (resposta.statusCode == 404) {
           print("resposta vazia");
@@ -125,30 +114,29 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
       case 0:
         return InventarisIncluirSituacao(
             refreshStatusSteps: refreshStatusSteps);
+      // case 1:
+      //   if (Globals().inventario.tem_numero_serie == null) {
+      //     Globals().inventario.tem_numero_serie = false;
+      //   } else {
+      //     listStatus[1] = true;
+      //   }
+      //   return InventarisIncluirNumeroSerie(
+      //       refreshStatusSteps: refreshStatusSteps);
       case 1:
-        if (Globals().inventario.tem_numero_serie == null) {
-          Globals().inventario.tem_numero_serie = false;
-        } else {
-          listStatus[1] = true;
-        }
-        return InventarisIncluirNumeroSerie(
-            refreshStatusSteps: refreshStatusSteps);
-      case 2:
         if (Globals().inventario.plaqueta == null) {
           Globals().inventario.plaqueta = false;
         }
-        listStatus[2] = true;
+        listStatus[1] = true;
         return InventarisIncluirPlaquetaEstado(
             refreshStatusSteps: refreshStatusSteps);
-      case 3:
+      case 2:
         if (Globals().inventario.observacao == null) {
           Globals().inventario.observacao = '';
         }
         return InventarisIncluirObservacao(
             refreshStatusSteps: refreshStatusSteps);
-      case 4:
-        listStatus[4] =
-            listStatus[0] && listStatus[1] && listStatus[2] && listStatus[3];
+      case 3:
+        listStatus[3] = listStatus[0] && listStatus[1] && listStatus[2];
         return InventarisIncluirResumo(refreshStatusSteps: refreshStatusSteps);
     }
   }

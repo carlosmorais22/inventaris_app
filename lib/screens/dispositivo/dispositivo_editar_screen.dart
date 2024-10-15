@@ -1,5 +1,3 @@
-import 'dart:convert' as convert;
-
 import 'package:flutter/material.dart';
 import 'package:inventaris/entities/dispositivo.dart';
 import 'package:inventaris/screens/common_widgets/app_text_field.dart';
@@ -152,7 +150,7 @@ class DispositivoEditarScreenState extends State<DispositivoEditarScreen> {
                   ),
                   TableRow(
                     children: [
-                      Text(kDispositivoFabricante,
+                      Text(kDispositivoStatus,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           )),
@@ -243,13 +241,7 @@ class DispositivoEditarScreenState extends State<DispositivoEditarScreen> {
         text: kMsgConfirmaEdicao,
         context: context,
         onConfirmBtnTap: () async {
-          var response = AppHttp.put(
-              '/api/dispositivo',
-              {
-                "Content-Type": "application/json",
-                "accept": "application/json"
-              },
-              convert.json.encode(Globals().dispositivo));
+          var response = AppHttp.put('/api/dispositivo', Globals().dispositivo);
 
           response.then((resposta) {
             print(resposta.statusCode);
