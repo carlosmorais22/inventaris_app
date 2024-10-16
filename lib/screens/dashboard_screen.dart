@@ -47,13 +47,15 @@ class _DashoardTabState extends State<DashoardTab> {
 
   List<TableRow> rowTable = [];
 
-  _registrarBemNaoLocalizado(BuildContext context, int idBem) {
+  _registrarBemNaoLocalizado(BuildContext context, Bem bem) {
     var endPoint = '/api/inventario';
 
     Inventario inventario = Inventario(
         ano: 2024,
-        bem: idBem,
+        bem: bem.id,
         situacao: 3,
+        estado: bem.estado,
+        numero_serie: bem.numero_serie,
         cadastrado_por: Globals().esteDispositivo.cpf,
         dispositivo: Globals().esteDispositivo.id,
         situacao_observacao: "");
@@ -245,7 +247,7 @@ class _DashoardTabState extends State<DashoardTab> {
                                                       context: context,
                                                       onConfirmBtnTap: () {
                                                         _registrarBemNaoLocalizado(
-                                                            context, bem.id);
+                                                            context, bem);
                                                       });
                                                   print(bem.id);
                                                 },
@@ -343,16 +345,16 @@ class _DashoardTabState extends State<DashoardTab> {
                             size: 18.0,
                           )
                         : lista[0]! == 2
-                        ? Icon(
-                            Icons.verified_outlined,
-                            color: Colors.green,
-                            size: 18.0,
-                          )
-                        : Icon(
-                              Icons.verified_,
-                              color: Colors.red,
-                              size: 18.0,
-                            )
+                            ? Icon(
+                                Icons.verified_outlined,
+                                color: Colors.green,
+                                size: 18.0,
+                              )
+                            : Icon(
+                                Icons.verified,
+                                color: Colors.red,
+                                size: 18.0,
+                              )
                     : SizedBox(),
           ),
           _buildCell(context, lista[1], ehTitulo, "L", 1),
