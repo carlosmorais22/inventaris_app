@@ -4,7 +4,8 @@ import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 
 const host = "api-inventaris.uerr.edu.br";
-//const host = "192.168.1.9:5000";
+// const host = "192.168.1.9:5000";
+//const host = "192.168.94.188:5000";
 
 // retorna bens para o tipo e texto do filtro
 Future<Map<String, dynamic>> get(String endPoint) async {

@@ -3,19 +3,25 @@ import 'dart:io';
 import 'package:back_pressed/back_pressed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:inventaris/screens/common_widgets/custon_elevated_button.dart';
 import 'package:inventaris/screens/common_widgets/step_title.dart';
 import 'package:inventaris/utils/app_alert.dart';
 import 'package:inventaris/utils/constants.dart';
 
 enum SingingCharacter { setor, tombo, descricao }
 
-
 class DesabilitadoTab extends StatefulWidget {
   final Map<String, dynamic> dadosDispositivo;
+  final VoidCallback? callback;
   final String titulo;
   final String mensagem;
 
-  const DesabilitadoTab({super.key, required this.dadosDispositivo, required this.titulo, required this.mensagem});
+  const DesabilitadoTab(
+      {super.key,
+      required this.callback,
+      required this.dadosDispositivo,
+      required this.titulo,
+      required this.mensagem});
 
   @override
   State<DesabilitadoTab> createState() => _DesabilitadoTabState();
@@ -54,8 +60,7 @@ class _DesabilitadoTabState extends State<DesabilitadoTab> {
             children: [
               StepTitle(
                 title: widget.titulo,
-                subTitle:
-                    widget.mensagem,
+                subTitle: widget.mensagem,
               ),
               SizedBox(
                 height: 20,
@@ -76,7 +81,7 @@ class _DesabilitadoTabState extends State<DesabilitadoTab> {
                         ),
                       ),
                       Expanded(
-                        child: Text(widget.dadosDispositivo['id'],
+                        child: Text(widget.dadosDispositivo['display'],
                             maxLines: 10, overflow: TextOverflow.ellipsis),
                       ),
                     ],
@@ -113,6 +118,11 @@ class _DesabilitadoTabState extends State<DesabilitadoTab> {
                   )
                 ]),
               ),
+              SizedBox(
+                height: 15,
+              ),
+              CustonElevatedButton(
+                  text: "Atualizar", onClickBtnTap: widget.callback),
             ],
           ),
         ),

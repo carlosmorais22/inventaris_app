@@ -9,7 +9,6 @@ import 'package:inventaris/screens/dashboard_screen.dart';
 import 'package:inventaris/screens/desabilitado_screen.dart';
 import 'package:inventaris/shared/globals.dart';
 import 'package:inventaris/utils//app_http.dart' as AppHttp;
-import 'package:inventaris/utils/app_toast_notification.dart';
 import 'package:inventaris/utils/constants.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -30,37 +29,38 @@ class _DeviceInfoState extends State<DeviceInfo> {
   String fabricanteDispositivo = "";
   String titulo = "";
   String mensagem = "";
+  late Future<Map<String, dynamic>> responseDeviceData;
 
   Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
     return <String, dynamic>{
-      // 'version.securityPatch': build.version.securityPatch,
-      // 'version.sdkInt': build.version.sdkInt,
-      // 'version.release': build.version.release,
-      // 'version.previewSdkInt': build.version.previewSdkInt,
-      // 'version.incremental': build.version.incremental,
-      // 'version.codename': build.version.codename,
-      // 'version.baseOS': build.version.baseOS,
-      // 'board': build.board,
-      // 'bootloader': build.bootloader,
-      // 'brand': build.brand,
-      // 'device': build.device,
-      // 'display': build.display,
-      // 'fingerprint': build.fingerprint,
-      // 'hardware': build.hardware,
-      // 'host': build.host,
+      'version.securityPatch': build.version.securityPatch,
+      'version.sdkInt': build.version.sdkInt,
+      'version.release': build.version.release,
+      'version.previewSdkInt': build.version.previewSdkInt,
+      'version.incremental': build.version.incremental,
+      'version.codename': build.version.codename,
+      'version.baseOS': build.version.baseOS,
+      'board': build.board,
+      'bootloader': build.bootloader,
+      'brand': build.brand,
+      'device': build.device,
+      'display': build.display,
+      'fingerprint': build.fingerprint,
+      'hardware': build.hardware,
+      'host': build.host,
       'id': build.id,
       'manufacturer': build.manufacturer,
       'model': build.model,
-      // 'product': build.product,
-      // 'supported32BitAbis': build.supported32BitAbis,
-      // 'supported64BitAbis': build.supported64BitAbis,
-      // 'supportedAbis': build.supportedAbis,
-      // 'tags': build.tags,
-      // 'type': build.type,
-      // 'isPhysicalDevice': build.isPhysicalDevice,
-      // 'systemFeatures': build.systemFeatures,
-      // 'serialNumber': build.serialNumber,
-      // 'isLowRamDevice': build.isLowRamDevice,
+      'product': build.product,
+      'supported32BitAbis': build.supported32BitAbis,
+      'supported64BitAbis': build.supported64BitAbis,
+      'supportedAbis': build.supportedAbis,
+      'tags': build.tags,
+      'type': build.type,
+      'isPhysicalDevice': build.isPhysicalDevice,
+      'systemFeatures': build.systemFeatures,
+      'serialNumber': build.serialNumber,
+      'isLowRamDevice': build.isLowRamDevice,
     };
   }
 
@@ -167,13 +167,25 @@ class _DeviceInfoState extends State<DeviceInfo> {
 
   @override
   void initState() {
+    _inicializaDispositivo();
+    super.initState();
+  }
 
-    Future<Map<String, dynamic>> responseDeviceData = initPlatformState();
+  _inicializaDispositivo() {
+    responseDeviceData = initPlatformState();
     responseDeviceData.then((deviceData) {
       _deviceData = deviceData;
-      idDispositivo = deviceData['id'];
+      idDispositivo = deviceData['display'];
       modeloDispositivo = deviceData['model'];
       fabricanteDispositivo = deviceData['manufacturer'];
+
+      print('display = ' + deviceData['display']);
+      print('id = ' + deviceData['id']);
+      print('manufacturer = ' + deviceData['manufacturer']);
+      print('model = ' + deviceData['model']);
+
+      print("################################");
+      print("################################");
       Future<Map<String, dynamic>> resultado =
           _refreshDspositivo(idDispositivo);
       resultado.then((resposta) {
@@ -186,18 +198,19 @@ class _DeviceInfoState extends State<DeviceInfo> {
                 resposta['cpf'] != "" &&
                 resposta['nome'] != null &&
                 resposta['nome'] != "";
-            if (!habilitado){
+            if (!habilitado) {
               print(resposta['status']);
               if (resposta['cpf'] != null &&
                   resposta['cpf'] != "" &&
                   resposta['nome'] != null &&
-                  resposta['nome'] != ""){
+                  resposta['nome'] != "") {
                 titulo = "Seu celular não esta autorizado.";
-                mensagem = "Favor entrar em contato com o administrador e informe os dados abaixo.";
-              }
-              else {
+                mensagem =
+                    "Favor entrar em contato com o administrador e informe os dados abaixo.";
+              } else {
                 titulo = "Seu celular não esta habilitado.";
-                mensagem = "Favor entrar em contato com o administrador e informe os dados abaixo.";
+                mensagem =
+                    "Favor entrar em contato com o administrador e informe os dados abaixo.";
               }
             }
             Globals().esteDispositivo = Dispositivo.fromMap(resposta);
@@ -208,10 +221,11 @@ class _DeviceInfoState extends State<DeviceInfo> {
         else {
           Dispositivo novoDispositivo = Dispositivo(
               id: idDispositivo,
-              modelo: modeloDispositivo,
               fabricante: fabricanteDispositivo,
+              modelo: modeloDispositivo,
               status: false,
               is_adm: false);
+          print(novoDispositivo.toJson());
           Globals().esteDispositivo = novoDispositivo;
 
           var endPoint = '/api/dispositivo';
@@ -222,19 +236,23 @@ class _DeviceInfoState extends State<DeviceInfo> {
               if (response.statusCode == 200) {
                 print(response.body);
                 titulo = "Seu celular não esta habilitado.";
-                mensagem = "Favor entrar em contato com o administrador e informe os dados abaixo.";
+                mensagem =
+                    "Favor entrar em contato com o administrador e informe os dados abaixo.";
                 // AppToastNotification.success(
                 //     text: "Dispositivo gravado com sucesso", context: context);
               } else {
                 if (response.statusCode == 404) {
                   titulo = "Houve um erro (404).";
-                  mensagem = "Favor entrar em contato com o administrador e informe os dados abaixo.";
+                  mensagem =
+                      "Favor entrar em contato com o administrador e informe os dados abaixo.";
                   // AppToastNotification.error(
                   //     text: "Houve um erro (404). Contate o administrador.",
                   //     context: context);
                 } else {
-                  titulo = 'Request failed with status: ${response.statusCode}.';
-                  mensagem = "Favor entrar em contato com o administrador e informe os dados abaixo.";
+                  titulo =
+                      'Request failed with status: ${response.statusCode}.';
+                  mensagem =
+                      "Favor entrar em contato com o administrador e informe os dados abaixo.";
                   // AppToastNotification.error(
                   //     text: 'Request failed with status: ${response.statusCode}.',
                   //     context: context);
@@ -262,7 +280,6 @@ class _DeviceInfoState extends State<DeviceInfo> {
         print("---------------------------------------------");
       });
     });
-    super.initState();
   }
 
   @override
@@ -282,7 +299,10 @@ class _DeviceInfoState extends State<DeviceInfo> {
         : habilitado
             ? DashoardTab()
             : DesabilitadoTab(
-                dadosDispositivo: _deviceData, titulo: titulo, mensagem: mensagem,
+                callback: _inicializaDispositivo,
+                dadosDispositivo: _deviceData,
+                titulo: titulo,
+                mensagem: mensagem,
               );
   }
 
@@ -316,20 +336,13 @@ class _DeviceInfoState extends State<DeviceInfo> {
     }
 
     if (!mounted) return <String, dynamic>{};
-
+    // print("################################");
+    // print("################################");
+    // print(deviceData);
+    // print("################################");
+    // print("################################");
     return deviceData;
   }
-
-  String _getAppBarTitle() => kIsWeb
-      ? 'Web Browser info'
-      : switch (defaultTargetPlatform) {
-          TargetPlatform.android => 'Android Device Info',
-          TargetPlatform.iOS => 'iOS Device Info',
-          TargetPlatform.linux => 'Linux Device Info',
-          TargetPlatform.windows => 'Windows Device Info',
-          TargetPlatform.macOS => 'MacOS Device Info',
-          TargetPlatform.fuchsia => 'Fuchsia Device Info',
-        };
 
   // retorna bens para o tipo e texto do filtro
   Future<Map<String, dynamic>> _refreshDspositivo(String idDispositivo) async {

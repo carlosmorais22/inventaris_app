@@ -84,7 +84,7 @@ class DispositivoEditarScreenState extends State<DispositivoEditarScreen> {
             ),
           ]),
       body: DefaultTextStyle(
-        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
             color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.normal),
         child: Container(
@@ -128,15 +128,6 @@ class DispositivoEditarScreenState extends State<DispositivoEditarScreen> {
                             fontWeight: FontWeight.bold,
                           )),
                       Text(Globals().dispositivo.cpf ?? ""),
-                    ], // Pass the widgets to be set as the row content.
-                  ),
-                  TableRow(
-                    children: [
-                      Text(kDispositivoModelo,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          )),
-                      Text(Globals().dispositivo.modelo),
                     ], // Pass the widgets to be set as the row content.
                   ),
                   TableRow(
