@@ -256,7 +256,7 @@ class _DeviceInfoState extends State<DeviceInfo> {
                   // AppToastNotification.error(
                   //     text: 'Request failed with status: ${response.statusCode}.',
                   //     context: context);
-                  print('Request failed with status: ${response.statusCode}.');
+                  print('Request failed with status: ${response.body}.');
                   throw Exception('Erro ao tentar acessar servidor externo');
                 }
               }

@@ -104,7 +104,7 @@ class InventarioIncluirScreenState extends State<InventarioIncluirScreen> {
           print("resposta vazia");
         } else {
           print('Request failed with status: ${resposta.statusCode}.');
-          throw Exception('Erro ao tentar acessar servidor externo');
+          throw Exception('Erro ao tentar acessar servidor externo ${resposta.body}');
         }
       }
     });
