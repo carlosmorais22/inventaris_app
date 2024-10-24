@@ -211,6 +211,8 @@ class _DashoardTabState extends State<DashoardTab> {
                             ];
                             rows.add(_buildRow(dados, 0, true));
                             for (Map<String, dynamic> item in list) {
+                              print(item['valor']);
+                              print((item['valor'].runtimeType));
                               Bem bem = Bem.fromMap(item);
                               String descricao = bem.descricao;
                               if (descricao.length >= tamanhoTextoDescricao) {
