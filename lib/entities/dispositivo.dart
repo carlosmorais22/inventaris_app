@@ -4,6 +4,7 @@ class Dispositivo {
   late String? cpf;
   late String modelo;
   late String fabricante;
+  late String orgao;
   late bool status;
   late bool? is_adm;
 
@@ -13,6 +14,7 @@ class Dispositivo {
       this.cpf,
       required this.modelo,
       required this.fabricante,
+      required this.orgao,
       required this.status,
       this.is_adm});
 
@@ -23,6 +25,7 @@ class Dispositivo {
     data['cpf'] = this.cpf;
     data['modelo'] = this.modelo;
     data['fabricante'] = this.fabricante;
+    data['orgao'] = this.orgao;
     data['status'] = this.status;
     data['is_adm'] = this.is_adm;
     return data;
@@ -34,6 +37,7 @@ class Dispositivo {
         cpf: map["cpf"] ?? "",
         modelo: map["modelo"],
         fabricante: map["fabricante"],
+        orgao: map["orgao"],
         status: map["status"],
         is_adm: map["is_adm"],
       );

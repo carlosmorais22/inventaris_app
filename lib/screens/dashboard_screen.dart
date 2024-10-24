@@ -116,7 +116,7 @@ class _DashoardTabState extends State<DashoardTab> {
         dismissOnCapturedTaps: true,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(kTitulo),
+            title: Text(kTitulo + ' (' + Globals().esteDispositivo.orgao + ')'),
             actions: <Widget>[
               Globals().esteDispositivo.is_adm!
                   ? IconButton(
@@ -441,18 +441,19 @@ class _DashoardTabState extends State<DashoardTab> {
       return [];
     }
     var endPoint = '';
+    String orgao = Globals().esteDispositivo.orgao;
     switch (_character) {
       case SingingCharacter.setor:
-        endPoint = '/api/bem/setor/' + _controller.text;
+        endPoint = '/api/bem/' + orgao + '/setor/' + _controller.text;
         break;
       case SingingCharacter.tombo:
-        endPoint = '/api/bem/tombo/' + _controller.text;
+        endPoint = '/api/bem/' + orgao + '/tombo/' + _controller.text;
         break;
       case SingingCharacter.descricao:
-        endPoint = '/api/bem/descricao/' + _controller.text;
+        endPoint = '/api/bem/' + orgao + '/descricao/' + _controller.text;
         break;
       default:
-        endPoint = '/api/bem/setor/' + _controller.text;
+        endPoint = '/api/bem/' + orgao + '/setor/' + _controller.text;
     }
     return AppHttp.list(endPoint);
   }

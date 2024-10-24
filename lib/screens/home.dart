@@ -179,13 +179,6 @@ class _DeviceInfoState extends State<DeviceInfo> {
       modeloDispositivo = deviceData['model'];
       fabricanteDispositivo = deviceData['manufacturer'];
 
-      print('display = ' + deviceData['display']);
-      print('id = ' + deviceData['id']);
-      print('manufacturer = ' + deviceData['manufacturer']);
-      print('model = ' + deviceData['model']);
-
-      print("################################");
-      print("################################");
       Future<Map<String, dynamic>> resultado =
           _refreshDspositivo(idDispositivo);
       resultado.then((resposta) {
@@ -197,13 +190,17 @@ class _DeviceInfoState extends State<DeviceInfo> {
                 resposta['cpf'] != null &&
                 resposta['cpf'] != "" &&
                 resposta['nome'] != null &&
-                resposta['nome'] != "";
+                resposta['nome'] != "" &&
+                resposta['orgao'] != null &&
+                resposta['orgao'] != "";
             if (!habilitado) {
               print(resposta['status']);
               if (resposta['cpf'] != null &&
                   resposta['cpf'] != "" &&
                   resposta['nome'] != null &&
-                  resposta['nome'] != "") {
+                  resposta['nome'] != "" &&
+                  resposta['orgao'] != null &&
+                  resposta['orgao'] != "") {
                 titulo = "Seu celular não esta autorizado.";
                 mensagem =
                     "Favor entrar em contato com o administrador e informe os dados abaixo.";
@@ -223,6 +220,7 @@ class _DeviceInfoState extends State<DeviceInfo> {
               id: idDispositivo,
               fabricante: fabricanteDispositivo,
               modelo: modeloDispositivo,
+              orgao: '',
               status: false,
               is_adm: false);
           print(novoDispositivo.toJson());
