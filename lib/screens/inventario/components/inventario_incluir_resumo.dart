@@ -124,12 +124,17 @@ class _InventarisIncluirResumoState extends State<InventarisIncluirResumo> {
       padding: EdgeInsets.only(top: 4.0),
       color: backgroundColor,
       child: !textArea
-          ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text("$label:",
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      )),
-              Text(conteudo, style: Theme.of(context).textTheme.bodyLarge!),
+          ? Row(children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.35,
+                child: Text("$label:",
+                    style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        )),
+              ),
+              Flexible(
+                  child: Text(conteudo,
+                      style: Theme.of(context).textTheme.displayMedium!)),
             ])
           : Container(
               width: double.infinity,

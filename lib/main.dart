@@ -51,11 +51,13 @@ class MyApp extends StatelessWidget {
           ),
           textTheme: TextTheme(
             bodyLarge: TextStyle(
-                color: Colors.black, fontStyle: FontStyle.italic, fontSize: 20),
+                color: Colors.black,
+                fontStyle: FontStyle.italic,
+                fontSize: MediaQuery.of(context).size.height / 28),
             bodyMedium: TextStyle(
                 color: Color.fromARGB(250, 26, 35, 126),
                 fontWeight: FontWeight.bold,
-                fontSize: 40),
+                fontSize: MediaQuery.of(context).size.height / 34),
             displayLarge: TextStyle(
               fontSize: MediaQuery.of(context).size.height / 32,
             ),

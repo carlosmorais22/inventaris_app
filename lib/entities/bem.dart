@@ -33,7 +33,7 @@ class Bem {
   factory Bem.fromMap(Map<String, dynamic> map) => Bem(
         id: map["id"],
         setor: map["setor"],
-        tombo: map["tombo"],
+        tombo: map["tombo"] ?? "0",
         descricao: map["descricao"],
         conta: map["conta"] ?? 0,
         estado: map["estado"],

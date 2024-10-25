@@ -39,13 +39,8 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
         Setor setor = Setor.fromMap(map);
         Globals().inventario!.situacao_observacao ??= setor.sigla;
         setores.add(setor);
-        suggestions.add(setor.sigla);
+        suggestions.add(setor.sigla + " - " + setor.nome);
       }
-      print("###################################");
-      print("###################################");
-      print(suggestions.length);
-      print("###################################");
-      print("###################################");
     });
     super.initState();
   }
@@ -125,7 +120,8 @@ class _InventarisIncluirSituacaoState extends State<InventarisIncluirSituacao> {
 
   // retorna bens para o tipo e texto do filtro
   Future<List> _refreshSetores() async {
-    var endPoint = '/api/setor';
+    var endPoint = '/api/setor/' + Globals().esteDispositivo.orgao;
+    print(endPoint);
     return AppHttp.list(endPoint);
   }
 }
