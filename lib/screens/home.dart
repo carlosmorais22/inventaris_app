@@ -180,11 +180,14 @@ class _DeviceInfoState extends State<DeviceInfo> {
       fabricanteDispositivo = deviceData['manufacturer'];
 
       Future<Map<String, dynamic>> resultado =
-          _refreshDspositivo(idDispositivo);
+          _refreshDspositivo(idDispositivo, modeloDispositivo, fabricanteDispositivo);
       resultado.then((resposta) {
         // Dispositivo localizado
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        print("AQUI");
         if (resposta.length > 0) {
           setState(() {
+            print("AQUI 1");
             habilitado = resposta.length > 0 &&
                 resposta['status'] &&
                 resposta['cpf'] != null &&
@@ -195,12 +198,14 @@ class _DeviceInfoState extends State<DeviceInfo> {
                 resposta['orgao'] != "";
             if (!habilitado) {
               print(resposta['status']);
+              print(resposta['cpf']);
+              print(resposta['nome']);
+              print(resposta['status']);
+              print(resposta['status']);
               if (resposta['cpf'] != null &&
                   resposta['cpf'] != "" &&
                   resposta['nome'] != null &&
-                  resposta['nome'] != "" &&
-                  resposta['orgao'] != null &&
-                  resposta['orgao'] != "") {
+                  resposta['nome'] != "") {
                 titulo = "Seu celular não esta autorizado.";
                 mensagem =
                     "Favor entrar em contato com o administrador e informe os dados abaixo.";
@@ -263,6 +268,7 @@ class _DeviceInfoState extends State<DeviceInfo> {
             });
           });
         }
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
       }).catchError((onError) {
         setState(() {
           habilitado = false;
@@ -343,8 +349,11 @@ class _DeviceInfoState extends State<DeviceInfo> {
   }
 
   // retorna bens para o tipo e texto do filtro
-  Future<Map<String, dynamic>> _refreshDspositivo(String idDispositivo) async {
-    var endPoint = '/api/dispositivo/' + idDispositivo;
+  Future<Map<String, dynamic>> _refreshDspositivo(String idDispositivo, String modelo, String fabricante) async {
+    var endPoint = '/api/dispositivo/' + idDispositivo + '/' + modelo + '/' + fabricante;
+    print("#######################################################");
+    print(endPoint);
+    print("#######################################################");
     return AppHttp.get(endPoint);
   }
 }
