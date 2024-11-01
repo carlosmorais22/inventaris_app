@@ -211,8 +211,6 @@ class _DashoardTabState extends State<DashoardTab> {
                             ];
                             rows.add(_buildRow(dados, 0, true));
                             for (Map<String, dynamic> item in list) {
-                              print(item['valor']);
-                              print((item['valor'].runtimeType));
                               Bem bem = Bem.fromMap(item);
                               String descricao = bem.descricao;
                               if (descricao.length >= tamanhoTextoDescricao) {
@@ -251,7 +249,6 @@ class _DashoardTabState extends State<DashoardTab> {
                                                         _registrarBemNaoLocalizado(
                                                             context, bem);
                                                       });
-                                                  print(bem.id);
                                                 },
                                                 backgroundColor:
                                                     Theme.of(context)
@@ -433,7 +430,7 @@ class _DashoardTabState extends State<DashoardTab> {
 
   _atualizarBemInventariado(int idBem, bool resposta) {
     if (resposta)
-      print('Bem com o id ' + idBem.toString() + ' foi realizado com sucesso');
+      print('Inventario do Bem com o id ' + idBem.toString() + ' foi realizado com sucesso');
     _atualizarPagina();
   }
 

@@ -53,6 +53,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         initialValue: widget.initialValue,
         inputFormatters: widget.inputFormatters,
         obscureText: isObscure,
+        style: Theme.of(context).textTheme.labelLarge,
         decoration: InputDecoration(
           errorStyle: TextStyle(fontSize: 0),
           labelStyle: Theme.of(context).textTheme.labelLarge,

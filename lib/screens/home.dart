@@ -172,118 +172,116 @@ class _DeviceInfoState extends State<DeviceInfo> {
   }
 
   _inicializaDispositivo() {
-    responseDeviceData = initPlatformState();
-    responseDeviceData.then((deviceData) {
-      _deviceData = deviceData;
-      idDispositivo = deviceData['display'];
-      modeloDispositivo = deviceData['model'];
-      fabricanteDispositivo = deviceData['manufacturer'];
+    try {
+      responseDeviceData = initPlatformState();
+      responseDeviceData.then((deviceData) {
+        _deviceData = deviceData;
+        idDispositivo = deviceData['display'];
+        modeloDispositivo = deviceData['model'];
+        fabricanteDispositivo = deviceData['manufacturer'];
 
-      Future<Map<String, dynamic>> resultado =
-          _refreshDspositivo(idDispositivo, modeloDispositivo, fabricanteDispositivo);
-      resultado.then((resposta) {
-        // Dispositivo localizado
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        print("AQUI");
-        if (resposta.length > 0) {
-          setState(() {
-            print("AQUI 1");
-            habilitado = resposta.length > 0 &&
-                resposta['status'] &&
-                resposta['cpf'] != null &&
-                resposta['cpf'] != "" &&
-                resposta['nome'] != null &&
-                resposta['nome'] != "" &&
-                resposta['orgao'] != null &&
-                resposta['orgao'] != "";
-            if (!habilitado) {
-              print(resposta['status']);
-              print(resposta['cpf']);
-              print(resposta['nome']);
-              print(resposta['status']);
-              print(resposta['status']);
-              if (resposta['cpf'] != null &&
+        Future<Map<String, dynamic>> resultado =
+            _refreshDspositivo(idDispositivo, modeloDispositivo, fabricanteDispositivo);
+        resultado.then((resposta) {
+          // Dispositivo localizado
+          if (resposta.length > 0) {
+            setState(() {
+              habilitado = resposta.length > 0 &&
+                  resposta['status'] &&
+                  resposta['cpf'] != null &&
                   resposta['cpf'] != "" &&
                   resposta['nome'] != null &&
-                  resposta['nome'] != "") {
-                titulo = "Seu celular não esta autorizado.";
-                mensagem =
-                    "Favor entrar em contato com o administrador e informe os dados abaixo.";
-              } else {
-                titulo = "Seu celular não esta habilitado.";
-                mensagem =
-                    "Favor entrar em contato com o administrador e informe os dados abaixo.";
-              }
-            }
-            Globals().esteDispositivo = Dispositivo.fromMap(resposta);
-            finalizou_teste = true;
-          });
-        }
-        // Dispositivo não localizado
-        else {
-          Dispositivo novoDispositivo = Dispositivo(
-              id: idDispositivo,
-              fabricante: fabricanteDispositivo,
-              modelo: modeloDispositivo,
-              orgao: '',
-              status: false,
-              is_adm: false);
-          print(novoDispositivo.toJson());
-          Globals().esteDispositivo = novoDispositivo;
-
-          var endPoint = '/api/dispositivo';
-          var responseAddDevice = AppHttp.post(endPoint, novoDispositivo);
-
-          responseAddDevice.then((response) {
-            setState(() {
-              if (response.statusCode == 200) {
-                print(response.body);
-                titulo = "Seu celular não esta habilitado.";
-                mensagem =
-                    "Favor entrar em contato com o administrador e informe os dados abaixo.";
-                // AppToastNotification.success(
-                //     text: "Dispositivo gravado com sucesso", context: context);
-              } else {
-                if (response.statusCode == 404) {
-                  titulo = "Houve um erro (404).";
+                  resposta['nome'] != "" &&
+                  resposta['orgao'] != null &&
+                  resposta['orgao'] != "";
+              if (!habilitado) {
+                if (resposta['cpf'] != null &&
+                    resposta['cpf'] != "" &&
+                    resposta['nome'] != null &&
+                    resposta['nome'] != "") {
+                  titulo = "Seu celular não esta autorizado.";
                   mensagem =
                       "Favor entrar em contato com o administrador e informe os dados abaixo.";
-                  // AppToastNotification.error(
-                  //     text: "Houve um erro (404). Contate o administrador.",
-                  //     context: context);
                 } else {
-                  titulo =
-                      'Request failed with status: ${response.statusCode}.';
+                  titulo = "Seu celular não esta habilitado.";
                   mensagem =
                       "Favor entrar em contato com o administrador e informe os dados abaixo.";
-                  // AppToastNotification.error(
-                  //     text: 'Request failed with status: ${response.statusCode}.',
-                  //     context: context);
-                  print('Request failed with status: ${response.body}.');
-                  throw Exception('Erro ao tentar acessar servidor externo');
                 }
               }
-              habilitado = false;
+              Globals().esteDispositivo = Dispositivo.fromMap(resposta);
               finalizou_teste = true;
             });
+          }
+          // Dispositivo não localizado
+          else {
+            Dispositivo novoDispositivo = Dispositivo(
+                id: idDispositivo,
+                fabricante: fabricanteDispositivo,
+                modelo: modeloDispositivo,
+                orgao: '',
+                status: false,
+                is_adm: false);
+            Globals().esteDispositivo = novoDispositivo;
+
+            var endPoint = '/api/dispositivo';
+            var responseAddDevice = AppHttp.post(endPoint, novoDispositivo);
+
+            responseAddDevice.then((response) {
+              setState(() {
+                if (response.statusCode == 200) {
+                  print(response.body);
+                  titulo = "Seu celular não esta habilitado.";
+                  mensagem =
+                      "Favor entrar em contato com o administrador e informe os dados abaixo.";
+                  // AppToastNotification.success(
+                  //     text: "Dispositivo gravado com sucesso", context: context);
+                } else {
+                  if (response.statusCode == 404) {
+                    titulo = "Houve um erro (404).";
+                    mensagem =
+                        "Favor entrar em contato com o administrador e informe os dados abaixo.";
+                    // AppToastNotification.error(
+                    //     text: "Houve um erro (404). Contate o administrador.",
+                    //     context: context);
+                  } else {
+                    titulo =
+                        'Request failed with status: ${response.statusCode}.';
+                    mensagem =
+                        "Favor entrar em contato com o administrador e informe os dados abaixo.";
+                    // AppToastNotification.error(
+                    //     text: 'Request failed with status: ${response.statusCode}.',
+                    //     context: context);
+                    print('Request failed with status: ${response.body}.');
+                    throw Exception('Erro ao tentar acessar servidor externo');
+                  }
+                }
+                habilitado = false;
+                finalizou_teste = true;
+              });
+            });
+          }
+        }).catchError((onError) {
+          setState(() {
+            habilitado = false;
+            finalizou_teste = true;
+            titulo = 'Problemas de acesso ao servidor da aplicação.';
+            mensagem = "Favor verificar sua conexão com a internet.";
           });
-        }
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-      }).catchError((onError) {
-        setState(() {
-          habilitado = false;
-          finalizou_teste = true;
-          titulo = 'Problemas de acesso ao servidor da aplicação.';
-          mensagem = "Favor verificar sua conexão com a internet.";
+          // AppToastNotification.error(
+          //     text: mensagem,
+          //     context: context);
+          print("------------------- ERROR -------------------");
+          print(onError);
+          print("---------------------------------------------");
         });
-        // AppToastNotification.error(
-        //     text: mensagem,
-        //     context: context);
-        print("------------------- ERROR -------------------");
-        print(onError);
-        print("---------------------------------------------");
       });
-    });
+    } on Exception catch(e){
+      print('error: $e');
+      habilitado = false;
+      finalizou_teste = true;
+      titulo = 'Erro encontrado.';
+      mensagem = 'error: $e';
+    }
   }
 
   @override
@@ -340,20 +338,12 @@ class _DeviceInfoState extends State<DeviceInfo> {
     }
 
     if (!mounted) return <String, dynamic>{};
-    // print("################################");
-    // print("################################");
-    // print(deviceData);
-    // print("################################");
-    // print("################################");
     return deviceData;
   }
 
   // retorna bens para o tipo e texto do filtro
   Future<Map<String, dynamic>> _refreshDspositivo(String idDispositivo, String modelo, String fabricante) async {
     var endPoint = '/api/dispositivo/' + idDispositivo + '/' + modelo + '/' + fabricante;
-    print("#######################################################");
-    print(endPoint);
-    print("#######################################################");
     return AppHttp.get(endPoint);
   }
 }

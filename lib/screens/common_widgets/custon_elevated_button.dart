@@ -22,7 +22,7 @@ class CustonElevatedButton extends StatelessWidget {
         onPressed: onClickBtnTap,
         child: Text(
           text,
-          style: Theme.of(context).textTheme.displayMedium!.copyWith(
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
               color: onClickBtnTap == null
                   ? Theme.of(context).colorScheme.tertiary
                   : Theme.of(context).colorScheme.surface,

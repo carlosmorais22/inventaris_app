@@ -37,12 +37,9 @@ class _AppTextFieldState extends State<AppTextField> {
     DropDownState(
       DropDown(
         isDismissible: true,
-        bottomSheetTitle: const Text(
+        bottomSheetTitle: Text(
           kEstadoBem,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0,
-          ),
+          style: Theme.of(context).textTheme.labelMedium,
         ),
         isSearchVisible: false,
         data: widget.list ?? [],
@@ -84,6 +81,7 @@ class _AppTextFieldState extends State<AppTextField> {
                   onTextFieldTap();
                 }
               : null,
+          style: Theme.of(context).textTheme.titleMedium,
           decoration: InputDecoration(
             filled: true,
             fillColor: Theme.of(context).colorScheme.onSurfaceVariant,

@@ -60,7 +60,7 @@ class _InventarisIncluirObservacaoState
               hint: "",
               isListSelected: false,
               voidCallback: _observacaoControllerEvent,
-              minLines: 5,
+              minLines: 6,
             ),
           ],
         ),

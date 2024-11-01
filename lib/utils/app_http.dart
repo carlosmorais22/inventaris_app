@@ -3,13 +3,13 @@ import 'dart:convert' as convert;
 
 import 'package:http/http.dart' as http;
 
-// const host = "api-inventaris.uerr.edu.br";
-const host = "10.97.150.102:5000";
+const host = "api-inventaris.uerr.edu.br";
+// const host = "10.97.150.102:5000";
 // const host = "api-testes.uerr.edu.br";
 
 // retorna bens para o tipo e texto do filtro
 Future<Map<String, dynamic>> get(String endPoint) async {
-  var url = Uri.http(host, endPoint);
+  var url = Uri.https(host, endPoint);
 
   var response = await http.get(url);
   if (response.statusCode == 201) {
@@ -22,7 +22,7 @@ Future<Map<String, dynamic>> get(String endPoint) async {
 
 // retorna bens para o tipo e texto do filtro
 Future<List<dynamic>> list(String endPoint) async {
-  var url = Uri.http(host, endPoint, {'q': ''});
+  var url = Uri.https(host, endPoint, {'q': ''});
 
   var response = await http.get(url);
   print(response.statusCode);
@@ -42,7 +42,7 @@ Future<http.Response> post(String endPoint, Object object) async {
     "Content-Type": "application/json",
     "accept": "application/json"
   };
-  var url = Uri.http(host, endPoint, {'q': ''});
+  var url = Uri.https(host, endPoint, {'q': ''});
 
   return http.post(url, headers: headers, body: body);
 }
@@ -54,7 +54,7 @@ Future<http.Response> put(String endPoint, Object object) async {
     "Content-Type": "application/json",
     "accept": "application/json"
   };
-  var url = Uri.http(host, endPoint);
+  var url = Uri.https(host, endPoint);
 
   return http.put(url, headers: headers, body: body);
 }

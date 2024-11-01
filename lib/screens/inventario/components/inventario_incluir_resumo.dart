@@ -142,10 +142,10 @@ class _InventarisIncluirResumoState extends State<InventarisIncluirResumo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("$label:",
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      style: Theme.of(context).textTheme.displayMedium!.copyWith(
                             fontWeight: FontWeight.bold,
                           )),
-                  Text(conteudo, style: Theme.of(context).textTheme.bodyLarge!),
+                  Text(conteudo, style: Theme.of(context).textTheme.displayMedium!),
                 ],
               ),
             ),
